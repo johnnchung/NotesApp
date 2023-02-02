@@ -8,4 +8,4 @@
  */
 
 rootProject.name = "cs346notesapp"
-include("app", "list", "utilities")
+include("app", "list", "sharedmodules")

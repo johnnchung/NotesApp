@@ -3,7 +3,7 @@
  */
 package cs346notesapp.app
 
-import cs346notesapp.utilities.StringUtils
+import cs346notesapp.sharedmodules.StringUtils
 
 import org.apache.commons.text.WordUtils
 
