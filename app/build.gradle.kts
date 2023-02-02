@@ -8,7 +8,7 @@ plugins {
 
 dependencies {
     implementation("org.apache.commons:commons-text")
-    implementation(project(":shared-modules"))
+    implementation(project(":utilities"))
 }
 
 application {
