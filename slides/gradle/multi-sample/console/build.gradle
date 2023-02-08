@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'net.codebot.common-conventions'
+}
+
+dependencies {
+    implementation project(':lib')
+}
+
+application {
+    mainClass = "net.codebot.console.MainKt"
+}
