@@ -11,10 +11,9 @@ class Main : Application() {
     override fun start(stage: Stage) {
         stage.scene = Scene(
             StackPane(Label("Hello ${SysInfo.userName}")),
-            250.0,
-            150.0)
-        stage.isResizable = false
-        stage.title = "GUI Project"
+            800.0,
+            600.0)
+        stage.title = "Island Boys Notes App"
         stage.show()
     }
 }
