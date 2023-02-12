@@ -1,5 +1,4 @@
 package net.codebot.console
-
 import net.codebot.shared.SysInfo
 
 fun main() {

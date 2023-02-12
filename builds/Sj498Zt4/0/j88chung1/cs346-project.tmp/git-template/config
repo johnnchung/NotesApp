@@ -1,0 +1,6 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[http "https://git.uwaterloo.ca"]
+	sslCAInfo = /Users/timchung/cs346/cs346-project/builds/Sj498Zt4/0/j88chung1/cs346-project.tmp/CI_SERVER_TLS_CA_FILE
