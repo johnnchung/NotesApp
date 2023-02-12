@@ -46,8 +46,26 @@ javafx {
 
 // https://stackoverflow.com/questions/74453018/jlink-package-kotlin-in-both-merged-module-and-kotlin-stdlib
 jlink {
+    addOptions("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
+    if("true" == System.getenv("CI")) {
+        listOf("win", "linux", "mac").forEach { name ->
+            targetPlatform(name) {
+                addExtraModulePath(System.getenv("OPENJFX_MODS_" + name.toUpperCase()))
+            }
+        }
+    }
     launcher {
         name = "Notes"
+    }
+
+    jpackage {
+        if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
+            installerType = "msi"
+        } else if (org.gradle.internal.os.OperatingSystem.current().isLinux) {
+            installerType = "deb"
+        } else {
+            installerType = "dmg"
+        }
     }
     forceMerge("kotlin")
 }
