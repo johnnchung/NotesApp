@@ -16,3 +16,12 @@ Supported gradle tasks:
 | run     | Run the application or console project               |
 | distZip | Create run scripts in application/build/distribution |
 | distTar | Create run scripts in application/build/distribution |
+
+
+Building an installer for the project:
+
+run ./gradlew jpackage
+
+an installer will be installed in application/build/jpackage/Notes
+
+You can use the Notes.exe as a shortcut
