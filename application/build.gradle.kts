@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":shared"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     testImplementation(kotlin("test"))
+    testImplementation("org.mockito:mockito-core:4.2.0")
 }
 
 tasks.test {
