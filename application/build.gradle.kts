@@ -66,6 +66,8 @@ jlink {
         } else {
             installerType = "dmg"
         }
+        outputDir = "Notes"
+        installerOptions = listOf("--win-menu", "--win-shortcut")
     }
     forceMerge("kotlin")
 }
