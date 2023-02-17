@@ -20,7 +20,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
-    if ($PSVersionTable.PSVersion){
+  if ($PSVersionTable.PSVersion) {
       $env:GRADLE_USER_HOME= Join-Path $PWD .gradle
   } else {
      GRADLE_USER_HOME="$(pwd)/.gradle"
