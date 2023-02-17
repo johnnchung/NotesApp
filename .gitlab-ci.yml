@@ -20,7 +20,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
-   if [[ "$CI_RUNNER_TAGS" == *"windows"* ]];
+   if  [[ $CI_RUNNER_TAGS  ==  *"windows"* ]];
    then
       $env:GRADLE_USER_HOME= Join-Path $PWD .gradle
    else
