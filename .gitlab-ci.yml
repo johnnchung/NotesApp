@@ -19,15 +19,21 @@ image: gradle:alpine
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-before_script:
-   if  [[ $CI_RUNNER_TAGS  ==  *"windows"* ]];
-   then
-      $env:GRADLE_USER_HOME= Join-Path $PWD .gradle
-   else
-     GRADLE_USER_HOME="$(pwd)/.gradle"
-     export GRADLE_USER_HOME
-  fi
-  
+before_script: |
+   - tags:
+     windows
+   script:
+        -  $env:GRADLE_USER_HOME= Join-Path $PWD .gradle
+   - tags:
+     linux
+     macos
+    script:
+    - GRADLE_USER_HOME="$(pwd)/.gradle"
+    - export GRADLE_USER_HOME
+
+ 
+
+   
 
 
 build:
