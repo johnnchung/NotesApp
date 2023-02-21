@@ -20,22 +20,9 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script: |
-   - tags:
-     windows
-   script:
-        -  $env:GRADLE_USER_HOME= Join-Path $PWD .gradle
-   - tags:
-     linux
-     macos
-    script:
-    - GRADLE_USER_HOME="$(pwd)/.gradle"
-    - export GRADLE_USER_HOME
-
- 
-
-   
-
-
+  - GRADLE_USER_HOME="$(pwd)/.gradle"
+  - export GRADLE_USER_HOME
+  
 build:
   stage: build
   script: ./gradlew --build-cache assemble
