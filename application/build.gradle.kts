@@ -41,7 +41,7 @@ application {
 
 javafx {
     // version is determined by the plugin above
-    version = "18.0.2"
+    version = "17.0.2"
     modules = listOf("javafx.controls", "javafx.graphics")
 }
 
