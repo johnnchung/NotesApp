@@ -5,6 +5,7 @@ import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
 class Main : Application() {
@@ -14,9 +15,13 @@ class Main : Application() {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
 
+        val toolBar = ToolBarClass(model).apply {
+            HBox.setHgrow(this, Priority.ALWAYS)
+        }
+
         // TODO: Add root.middle here for the text field of our notes application
         val root = BorderPane()
-        root.top = menuBar
+        root.top = VBox(menuBar, toolBar)
 
         stage.apply {
             title = "Island Boys Notes Application"
