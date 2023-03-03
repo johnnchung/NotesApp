@@ -119,6 +119,6 @@ class ToolBarClass(private val model: Model): HBox(), ToolBarView {
             setHgrow(this, Priority.ALWAYS)
         }
         this.children.addAll(toolbar)
-        model.addToolBarView(this)
+        // model.addToolBarView(this)
     }
 }
