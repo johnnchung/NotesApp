@@ -5,7 +5,7 @@ class Model {
         view.updateMenuBarView()
     }
 
-    fun addToolBarView(view: ToolBarView) {
-        view.updateToolBarView()
+    fun addNotesView(view: NotesView) {
+        view.updateNotesView()
     }
 }
