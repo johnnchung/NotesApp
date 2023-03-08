@@ -5,11 +5,11 @@ import javafx.scene.control.ToolBar
 import javafx.scene.web.HTMLEditor
 import javafx.util.Duration
 
-class NotesField(private val model: Model) : HTMLEditor(), NotesView {
-    override fun updateNotesView() {
+class NotesField(private val model: Model) : HTMLEditor(), IView {
+    override fun update() {
 
     }
     init {
-        model.addNotesView(this)
+        model.createView(this)
     }
 }

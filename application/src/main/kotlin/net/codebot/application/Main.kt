@@ -2,6 +2,9 @@ package net.codebot.application
 
 import javafx.application.Application
 import javafx.scene.Scene
+import javafx.scene.control.ScrollPane
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
@@ -16,12 +19,28 @@ class Main : Application() {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
 
+        val toolbar = ToolBarClass(model).apply {
+            HBox.setHgrow(this, Priority.ALWAYS)
+        }
+
         val notes = NotesField(model)
+        val notesView = NoteView(model)
+        val notePage = BorderPane().apply {
+            top = VBox(menuBar)
+            center = notes
+        }
+
+        val homePage = BorderPane().apply {
+            top = toolbar
+            center = ScrollPane(notesView)
+        }
 
         // TODO: Add root.middle here for the text field of our notes application
-        val root = BorderPane()
-        root.top = VBox(menuBar)
-        root.center = notes
+        val root = TabPane().apply {
+            tabs.add(Tab("Home",homePage))
+            tabs.add(Tab("Note", notePage))
+
+        }
 
         stage.apply {
             title = "Island Boys Notes Application"

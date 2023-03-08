@@ -2,7 +2,7 @@ package net.codebot.application
 
 import javafx.scene.control.*
 
-class MenuBarClass(private val model: Model): MenuBar(), MenuBarView {
+class MenuBarClass(private val model: Model): MenuBar(), IView {
     private val fileOptions = Menu("File")
     private val editOptions = Menu("Edit")
     private val viewOptions = Menu("View")
@@ -63,10 +63,10 @@ class MenuBarClass(private val model: Model): MenuBar(), MenuBarView {
             viewText = selectedOption.text
         }
 
-        model.addMenuBarView(this)
+        model.createView(this)
     }
 
-    override fun updateMenuBarView() {
+    override fun update() {
 
     }
 }
