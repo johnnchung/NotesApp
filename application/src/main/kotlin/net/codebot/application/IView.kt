@@ -1,5 +1,5 @@
 package net.codebot.application
 
-interface NotesView {
+interface IView {
     fun update()
 }
