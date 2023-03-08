@@ -32,7 +32,9 @@ class Main : Application() {
 
         val homePage = BorderPane().apply {
             top = toolbar
-            center = ScrollPane(notesView)
+            center = ScrollPane(notesView).apply{
+                isFitToWidth = true
+            }
         }
 
         // TODO: Add root.middle here for the text field of our notes application

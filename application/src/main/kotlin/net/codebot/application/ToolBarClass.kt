@@ -30,7 +30,7 @@ class ToolBarClass(private val model: Model): VBox(), IView {
         prefWidth = 50.0
     }
 
-    private val toolbar1 = ToolBar(noteTitle, group, createButton)
+    private val toolbar1 = ToolBar(Label("Note Title:"), noteTitle, Separator(), Label("Group Name:"), group, createButton)
 
     // create components for the search/sort toolbar
     private val sortLabel = Label("sort by:").apply {
