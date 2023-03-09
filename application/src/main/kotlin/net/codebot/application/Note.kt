@@ -16,6 +16,23 @@ import javafx.scene.paint.Color
 
 class Note(private val model : Model, title : String, group : String, body : String) {
     private var oldtitle = title
+    private var newTitle = title
+
+    private var groupText = group
+    private var newGroup = group
+
+    private var bodyText = body
+
+    fun getTitle() : String {
+        return newTitle
+    }
+    fun getGroup() : String {
+        return newGroup
+    }
+
+    fun getContent() : String {
+        return bodyText
+    }
 
     val titleField = TextField(title).apply {
         padding = Insets(5.0)
@@ -23,6 +40,9 @@ class Note(private val model : Model, title : String, group : String, body : Str
         alignment = Pos.CENTER
         textProperty().addListener { _, oldVal, newVal ->
             updateButton.isDisable = false
+            if(newVal.isNotEmpty()) {
+                newTitle = newVal
+            }
         }
     }
 
@@ -30,8 +50,11 @@ class Note(private val model : Model, title : String, group : String, body : Str
         padding = Insets(5.0)
         prefWidth = 50.0
         alignment = Pos.CENTER
-        textProperty().addListener { _, _, _ ->
+        textProperty().addListener { _, oldVal, newVal ->
             updateButton.isDisable = false
+            if(newVal.isNotEmpty()) {
+                newGroup = newVal
+            }
         }
     }
 
@@ -49,7 +72,8 @@ class Note(private val model : Model, title : String, group : String, body : Str
 
     private val editButton = Button("Edit").apply {
         padding = Insets(5.0)
-        prefWidth = 75.0
+        prefWidth = 40.0
+        // ADD EVENT LISTENER
     }
 
     private val deleteButton = Button("Delete").apply {
