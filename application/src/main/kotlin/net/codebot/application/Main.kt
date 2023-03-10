@@ -1,6 +1,7 @@
 package net.codebot.application
 
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.Tab
@@ -15,6 +16,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.FileInputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintWriter
+import java.security.spec.ECField
 
 @Serializable
 data class dataClass(val width : Double, val height : Double,
@@ -64,11 +68,15 @@ class Main : Application() {
         }
 
         stage.setOnCloseRequest {
-            val file = File("data.json")
-            file.writeText("")
-            val dataClassWhole = dataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)
-            val string = Json.encodeToString(dataClassWhole)
-            file.appendText(string)
+            try {
+                val path = System.getProperty("user.dir") + "\\data.json"
+                val file = FileOutputStream("data.json")
+                val dataClassWhole = dataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)
+                val string = Json.encodeToString(dataClassWhole)
+                file.write(string.toByteArray())
+            } catch (e: Exception) {
+                Platform.exit()
+            }
         }
     }
 }
