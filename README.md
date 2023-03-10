@@ -1,13 +1,12 @@
-Single Desktop Application
-(c) 2022 Jeff Avery
+Notes Application
 
-Demonstrates how to structure a multi-project build in Gradle.
-It includes a main JavaFX project in the application/ folder,
-a console application in console/, and a shared library 
-in the shared/ folder which extracts system information (like
-the name of the current user). 
+## Goal
+Create a working notes application that allows users to create, edit and delete notes
 
-Supported gradle tasks:
+## Team Members
+Yang Ji, John Chung, Hammad Khan, Tim Chung
+
+##Supported gradle tasks:
 
 | Tasks   | Description                                          |
 |:--------|:-----------------------------------------------------|
@@ -18,10 +17,11 @@ Supported gradle tasks:
 | distTar | Create run scripts in application/build/distribution |
 
 
-Building an installer for the project:
+## Quick-start
+Can either run our Notes.sh console application or download the app from an installer in our releases folder 
+	- Note that at this time, there may be some issues with the application as we are in the development phase
 
-run ./gradlew jpackage
-
-an installer will be installed in application/build/jpackage/Notes
-
-You can use the Notes.exe as a shortcut
+## Releases
+Version 1.5: released March 10th, 2023
+	- release-notes (in releases folder)
+	- Installers (Windows, MacOS)

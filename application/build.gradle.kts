@@ -64,13 +64,13 @@ jlink {
     jpackage {
         if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
             installerType = "msi"
+            installerOptions = listOf("--win-dir-chooser")
         } else if (org.gradle.internal.os.OperatingSystem.current().isLinux) {
             installerType = "deb"
         } else {
             installerType = "dmg"
         }
         outputDir = "Notes"
-        installerOptions = listOf("--win-menu", "--win-shortcut")
     }
     forceMerge("kotlin")
 }
