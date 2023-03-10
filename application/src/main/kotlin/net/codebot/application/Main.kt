@@ -1,7 +1,6 @@
 package net.codebot.application
 
 import javafx.application.Application
-import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.Tab
@@ -9,16 +8,12 @@ import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import javafx.scene.web.HTMLEditor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 import java.io.File
 
 @Serializable
@@ -29,11 +24,7 @@ data class dataClass(val width : Double, val height : Double,
 
 class Main : Application() {
     override fun start(stage: Stage) {
-
         val model = Model()
-        val menuBar = MenuBarClass(model).apply {
-            HBox.setHgrow(this, Priority.ALWAYS)
-        }
 
         val toolbar = ToolBarClass(model).apply {
             HBox.setHgrow(this, Priority.ALWAYS)
@@ -45,14 +36,7 @@ class Main : Application() {
         var width = readInput.width
         var stageX = readInput.xCoord
         var stageY = readInput.yCoord
-
-
-        val notes = NotesField(model)
         val notesView = NoteView(model)
-        val notePage = BorderPane().apply {
-            top = VBox(menuBar)
-            center = notes
-        }
 
         val homePage = BorderPane().apply {
             top = toolbar
@@ -62,22 +46,13 @@ class Main : Application() {
         }
 
         // TODO: Add root.middle here for the text field of our notes application
-        val root = TabPane().apply {
-            tabs.add(Tab("Home",homePage))
-            for(i in 0 until readInput.titles.size) {
-//                model.titleList.add(readInput.titles.elementAt(i))
-//                model.groupList.add(readInput.groups.elementAt(i))
-//                model.contentList.add(readInput.contents.elementAt(i))
-                //tabs.add(Tab(readInput.titles.elementAt(i)))
-                model.createNote(readInput.titles.elementAt(i), readInput.groups.elementAt(i))
-            }
-        }
+        val root = TabPaneNotes(model, readInput, homePage)
 
         stage.apply {
             title = "Island Boys Notes Application"
-            scene = Scene(root, width.toDouble(), height.toDouble())
-            stage.x = stageX.toDouble()
-            stage.y = stageY.toDouble()
+            scene = Scene(root, width, height)
+            stage.x = stageX
+            stage.y = stageY
         }.show()
 
         stage.heightProperty().addListener { _, _, newHeight ->

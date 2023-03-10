@@ -1,18 +1,12 @@
 package net.codebot.application
 
-import javafx.event.EventHandler
 import javafx.geometry.*
 import javafx.scene.control.*
-import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
-import javafx.scene.paint.*
-import javafx.util.Duration
 
 class ToolBarClass(private val model: Model): VBox(), IView {
-
-    // create all the components for note creation toolbar
+    // Create all the components for note creation toolbar
     private val noteTitle = TextField().apply {
         padding = Insets(5.0)
         maxWidth = 100.0
@@ -57,7 +51,6 @@ class ToolBarClass(private val model: Model): VBox(), IView {
         padding = Insets(10.0)
     }
 
-
     private val toolbar2 = ToolBar(sortLabel, sortBy, Separator(), searchLabel, searchBar,
                                    Separator(), includeGrouping).apply {
         maxWidth = Double.MAX_VALUE
@@ -66,12 +59,10 @@ class ToolBarClass(private val model: Model): VBox(), IView {
     }
 
     override fun update() {
-
     }
 
     init {
         this.children.addAll(toolbar1, toolbar2)
-
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             // checks to see if the course entered is a valid course
             if (noteTitle.text.isNotEmpty()) {

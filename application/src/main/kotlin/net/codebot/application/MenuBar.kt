@@ -20,14 +20,12 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
     fun getFileText(): String{
         return fileText.toString()
     }
-
     fun getEditOptions(): Menu {
         return editOptions
     }
     fun getEditText(): String {
         return editText.toString()
     }
-
     fun getViewOptions(): Menu {
         return viewOptions
     }
@@ -37,7 +35,10 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
 
     init {
         fileOptions.items.addAll(MenuItem("New"), MenuItem("Open"),
-            MenuItem("Save"), SeparatorMenuItem(), MenuItem("Exit")
+            MenuItem("Save").apply {
+                setOnAction {
+                    model.saveNotes()
+                } }, SeparatorMenuItem(), MenuItem("Exit")
         )
         editOptions.items.addAll(MenuItem("Undo"), MenuItem("Copy"),
             MenuItem("Paste"), SeparatorMenuItem(), MenuItem("Delete")
