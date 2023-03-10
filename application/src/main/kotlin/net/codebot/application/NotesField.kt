@@ -1,20 +1,18 @@
 package net.codebot.application
-
-import javafx.scene.control.Button
-import javafx.scene.control.ToolBar
 import javafx.scene.web.HTMLEditor
-import javafx.util.Duration
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 
-class NotesField(private val model: Model) : HTMLEditor(), IView {
-    override fun update() {
-    }
+class NotesField(private val model: Model, private val title: String) : HTMLEditor(), IView {
     init {
         model.createView(this)
+    }
+    override fun update() {
+        if(model.savedNotes) {
+            if(htmlText != "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"></body></html>") {
+                model.saveNotesContent(model.editedNote, htmlText)
+                println(model.editedNote)
+                println(htmlText)
+                model.savedNotes = false
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ class NotesFieldTest {
     fun getText() {
         val text = "Hello, world!"
         val updated = Runnable {
-            val notesFieldTest = NotesField(model)
+            val notesFieldTest = NotesField(model, "hello")
             notesFieldTest.htmlText = text
             assertEquals(text, notesFieldTest.htmlText)
         }

@@ -15,30 +15,30 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 
 class Note(private val model : Model, title : String, group : String, body : String) {
-    private var oldtitle = title
+    private var oldTitle = title
     private var newTitle = title
-
-    private var groupText = group
     private var newGroup = group
+    var bodyText = body
 
-    private var bodyText = body
-
+    // Getters for note properties
     fun getTitle() : String {
         return newTitle
     }
     fun getGroup() : String {
         return newGroup
     }
-
     fun getContent() : String {
         return bodyText
+    }
+    fun getBox(): HBox {
+        return block
     }
 
     val titleField = TextField(title).apply {
         padding = Insets(5.0)
         prefWidth = 50.0
         alignment = Pos.CENTER
-        textProperty().addListener { _, oldVal, newVal ->
+        textProperty().addListener { _, _, newVal ->
             updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
                 newTitle = newVal
@@ -50,7 +50,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
         padding = Insets(5.0)
         prefWidth = 50.0
         alignment = Pos.CENTER
-        textProperty().addListener { _, oldVal, newVal ->
+        textProperty().addListener { _, _, newVal ->
             updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
                 newGroup = newVal
@@ -58,14 +58,13 @@ class Note(private val model : Model, title : String, group : String, body : Str
         }
     }
 
-    private val bodyDisplay = Label().apply {
-        if (body.length >= 50) {
-            text = body.substring(0,50)
-        } else if (body.isEmpty()){
-            text = "New Note: Please edit"
-        }
-        else {
-            text = body
+    val bodyDisplay = Label().apply {
+        text = if (text.length >= 50) {
+            text.substring(0,50)
+        } else if (text.isEmpty()){
+            "New Note: Please edit"
+        } else {
+            text
         }
         setHgrow(this, Priority.ALWAYS)
     }
@@ -73,7 +72,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
     private val editButton = Button("Edit").apply {
         padding = Insets(5.0)
         prefWidth = 40.0
-        // ADD EVENT LISTENER
+        // TODO: Create an event listener where when the button is called, we open a new tab pane
     }
 
     private val deleteButton = Button("Delete").apply {
@@ -87,7 +86,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
         isDisable = true
     }
 
-    // create hbox for each of the fields
+    // create hBox for each of the fields
     private val titleBlock = HBox(titleField).apply {
         padding = Insets(5.0)
     }
@@ -113,7 +112,6 @@ class Note(private val model : Model, title : String, group : String, body : Str
         padding = Insets(5.0)
     }
 
-
     private val block = HBox(titleBlock, groupBlock, bodyDisplayBlock,
         editBlock, updateBlock, deleteBlock).apply {
         setHgrow(this, Priority.ALWAYS)
@@ -122,17 +120,14 @@ class Note(private val model : Model, title : String, group : String, body : Str
         background = Background(BackgroundFill(Color.LIGHTYELLOW, CornerRadii(5.00), Insets(5.0)))
     }
 
-    fun getBox(): HBox {
-        return block
-    }
     init {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            //TODO: Open the HTML editor for the current note
+            model.updateNotesPage(newTitle, newGroup, bodyText)
         }
 
         updateButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             updateButton.isDisable = true
-            model.updateNote(oldtitle, titleField.text,groupField.text)
+            model.updateNote(oldTitle, titleField.text, groupField.text)
         }
 
         deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
