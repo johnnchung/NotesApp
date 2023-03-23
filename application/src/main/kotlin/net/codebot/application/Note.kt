@@ -5,6 +5,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -157,6 +158,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
         maxWidth = Double.MAX_VALUE
         padding = Insets(10.0)
         background = Background(BackgroundFill(Color.LIGHTYELLOW, CornerRadii(5.00), Insets(5.0)))
+        // adds some keyboard functionality to udpate/edit/delete note
     }
 
     init {
@@ -181,6 +183,19 @@ class Note(private val model : Model, title : String, group : String, body : Str
         */
         deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             model.deleteNote(newTitle)
+        }
+
+        // After changing the title/group you can press enter to update the note
+        // instead of dragging mouse over to the update button
+        block.setOnKeyPressed { event ->
+            if (event.code == KeyCode.ENTER) {
+                if (!updateBlock.isDisable) {
+                    modtime = LocalDateTime.now()
+                    updateButton.isDisable = true
+
+                    model.updateNote(oldTitle, titleField.text, groupField.text)
+                }
+            }
         }
     }
 }

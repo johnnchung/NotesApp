@@ -3,6 +3,7 @@ package net.codebot.application
 import javafx.event.EventHandler
 import javafx.geometry.*
 import javafx.scene.control.*
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 
@@ -97,6 +98,15 @@ class ToolBarClass(private val model: Model): VBox(), IView {
             // checks to see if the course entered is a valid course
             if (noteTitle.text.isNotEmpty()) {
                 model.createNote(noteTitle.text, group.text)
+            }
+        }
+
+        // allows the user to hit enter to create the note if they do not want to move the mouse to hit the create button
+        toolbar1.setOnKeyPressed { event ->
+            if (event.code == KeyCode.ENTER) {
+                if (noteTitle.text.isNotEmpty()) {
+                    model.createNote(noteTitle.text, group.text)
+                }
             }
         }
 
