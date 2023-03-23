@@ -15,12 +15,17 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import java.time.LocalDateTime
 
+// This class is how we create a note instance that goes into  the model's notesList and NotesMap.
 class Note(private val model : Model, title : String, group : String, body : String,time:LocalDateTime) {
+    // We save the old title and group for update purposes.
     private var oldTitle = title
     private var oldGroup = group
+    // We save the new title and group for delete purposes.
     private var newTitle = title
     private var newGroup = group
+    // This is the time that was recorded when the note instance was created.
     private var modtime =  time
+    // The bodyText of our note instance.
     var bodyText = body
 
     // Getters for note properties
@@ -37,10 +42,14 @@ class Note(private val model : Model, title : String, group : String, body : Str
         return block
     }
 
+    // Returns the time in LocalDateTime format of when a Note instance was created or modified.
     fun getTime(): LocalDateTime? {
         return modtime
     }
 
+    /* This is our title field where the title of the note is displayed.
+        If you edit this field, it will enable the update button.
+     */
     val titleField = TextField(title).apply {
         padding = Insets(5.0)
         prefWidth = 50.0
@@ -50,6 +59,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
             updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
                 for (notes in list) {
+                    // we look for the old title in our map, and set the title to update
                     if (curVal == notes.key) {
                         oldTitle = curVal
                     }
@@ -59,6 +69,9 @@ class Note(private val model : Model, title : String, group : String, body : Str
         }
     }
 
+    /* This is our group field where the group of the note is displayed.
+        If you edit this field, it will enable the update button.
+     */
     val groupField = TextField(group).apply {
         padding = Insets(5.0)
         prefWidth = 50.0
@@ -72,6 +85,10 @@ class Note(private val model : Model, title : String, group : String, body : Str
         }
     }
 
+    /* This is our bodytext field where the body of the note is displayed.
+        If there is nothing in our bodytext, we will display "New Note: Please edit."
+        NOTE: Currently, we have a max character limit of 50. The text will be truncated if it's length >= 50.
+     */
     val bodyDisplay = Label().apply {
         text = if (text.length >= 50) {
             text.substring(0,50)
@@ -83,17 +100,24 @@ class Note(private val model : Model, title : String, group : String, body : Str
         setHgrow(this, Priority.ALWAYS)
     }
 
+    // This is the editButton for a note instance. When clicked, it opens a new tab pane with the clicked note instance.
     private val editButton = Button("Edit").apply {
         padding = Insets(5.0)
         prefWidth = 40.0
         // TODO: Create an event listener where when the button is called, we open a new tab pane
     }
 
+    /* This is the delete button for a note instance.
+       When clicked, it deletes the note instance.
+     */
     private val deleteButton = Button("Delete").apply {
         padding = Insets(5.0)
         prefWidth = 75.0
     }
 
+    /* This is the update button for a note instance.
+       When clicked and when it is enabled, it will update the note instance.
+     */
     private val updateButton = Button("Update").apply {
         padding = Insets(5.0)
         prefWidth = 75.0
@@ -126,6 +150,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
         padding = Insets(5.0)
     }
 
+    // This joins all the buttons and text fields into one HBox to display.
     private val block = HBox(titleBlock, groupBlock, bodyDisplayBlock,
         editBlock, updateBlock, deleteBlock).apply {
         setHgrow(this, Priority.ALWAYS)
@@ -135,17 +160,25 @@ class Note(private val model : Model, title : String, group : String, body : Str
     }
 
     init {
+        /* This event handler for the edit button will create a new tab pane with the note instance
+           for which edit button was clicked.
+         */
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             model.updateNotesPage(newTitle, newGroup, bodyText)
         }
-
+        /* This event handler for the update button will update the title and/or group of the note instance
+           for which the update button was clicked. Before we call updateNote in our model, we update
+           the time of the note instance to the current time. Then, we disable the update button.
+        */
         updateButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             modtime = LocalDateTime.now()
             updateButton.isDisable = true
 
             model.updateNote(oldTitle, titleField.text, groupField.text)
         }
-
+        /* This event handler for the delete button will delete the note instance
+           for which the delete button was clicked.
+        */
         deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             model.deleteNote(newTitle)
         }

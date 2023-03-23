@@ -64,24 +64,35 @@ class ToolBarClass(private val model: Model): VBox(), IView {
 
     init {
         this.children.addAll(toolbar1, toolbar2)
+
+        /*  We add a listener to the sortBy button. We check if there is a change in our value, then
+            let our model know that there is a change of state for the model's default sortoption.
+         */
         sortBy.apply {
             valueProperty().addListener {_,_,newval ->
                 model.sortNotify(newval)
             }
         }
-
+        /*  We add a listener to the Grouping button. We check if there is a change in our value, then
+            let our model know that there is a change of state for the model's defaultgroup value.
+        */
         includeGrouping.apply{
             selectedProperty().addListener{_,_,newval ->
                 model.groupNotes(newval)
             }
         }
-
+        /* We add a listener to the searchBar button. We check if there is a change in our value, then
+           let our model know that there is a change of state for the model's searchval.
+        */
         searchBar.apply {
             textProperty().addListener { _, _, newval ->
                 model.searchQuery(newval)
             }
         }
 
+        /* We add a listener to the create button. When it is clicked, we
+           let our model know that there is a new note instance to be made only if our titleField is not empty.
+        */
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             // checks to see if the course entered is a valid course
             if (noteTitle.text.isNotEmpty()) {
