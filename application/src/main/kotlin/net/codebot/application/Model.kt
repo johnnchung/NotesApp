@@ -1,5 +1,7 @@
 package net.codebot.application
 
+import java.time.LocalDateTime
+
 class Model {
     private val views : ArrayList<IView> = ArrayList()
     private val notesMap : MutableMap<String, Pair<String, String>> = mutableMapOf()
@@ -17,6 +19,9 @@ class Model {
     var openedNotes = false
     var savedNotes = false
     var closedNotes = false
+    var defaultsort = "Title"
+    var searchval = ""
+    var defaultgroup = false
 
     fun createView(view: IView) {
         views.add(view)
@@ -38,7 +43,7 @@ class Model {
             groupArray.add(group)
         }
         notesMap[title] = Pair(group, "")
-        notesList.add(Note(this, title, group,""))
+        notesList.add(Note(this, title, group,"",LocalDateTime.now()))
         updateAllNotes()
         notifyObservers()
     }
@@ -46,6 +51,10 @@ class Model {
     // Retrieve notesList
     fun getNotesList(): ArrayList<Note> {
         return notesList
+    }
+
+    fun getNotesMap(): MutableMap<String, Pair<String, String>> {
+        return notesMap
     }
 
     // Delete specific note by finding unique title within our notesMap
@@ -63,6 +72,7 @@ class Model {
 
     // Update notes title or group field
     fun updateNote(searchKey: String, title: String, group: String) {
+        println("search: $searchKey")
         val oldText = notesMap[searchKey]!!.second
         for (notes in notesList) {
             if (notes.titleField.text == title) {
@@ -114,5 +124,20 @@ class Model {
                 contentList[index] = htmlText
             }
         }
+    }
+
+    fun sortNotify(sortVal: String) {
+        defaultsort = sortVal
+        notifyObservers()
+    }
+
+    fun groupNotes(newval: Boolean) {
+        defaultgroup = newval
+        notifyObservers()
+    }
+
+    fun searchQuery(newval: String) {
+        searchval = newval
+        notifyObservers()
     }
 }

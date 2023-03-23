@@ -13,11 +13,14 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.HBox.setHgrow
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import java.time.LocalDateTime
 
-class Note(private val model : Model, title : String, group : String, body : String) {
+class Note(private val model : Model, title : String, group : String, body : String,time:LocalDateTime) {
     private var oldTitle = title
+    private var oldGroup = group
     private var newTitle = title
     private var newGroup = group
+    private var modtime =  time
     var bodyText = body
 
     // Getters for note properties
@@ -34,13 +37,23 @@ class Note(private val model : Model, title : String, group : String, body : Str
         return block
     }
 
+    fun getTime(): LocalDateTime? {
+        return modtime
+    }
+
     val titleField = TextField(title).apply {
         padding = Insets(5.0)
         prefWidth = 50.0
         alignment = Pos.CENTER
-        textProperty().addListener { _, _, newVal ->
+        val list = model.getNotesMap()
+        textProperty().addListener { _, curVal, newVal ->
             updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
+                for (notes in list) {
+                    if (curVal == notes.key) {
+                        oldTitle = curVal
+                    }
+                }
                 newTitle = newVal
             }
         }
@@ -50,9 +63,10 @@ class Note(private val model : Model, title : String, group : String, body : Str
         padding = Insets(5.0)
         prefWidth = 50.0
         alignment = Pos.CENTER
-        textProperty().addListener { _, _, newVal ->
+        textProperty().addListener { _, currVal, newVal ->
             updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
+                oldGroup = currVal
                 newGroup = newVal
             }
         }
@@ -126,12 +140,14 @@ class Note(private val model : Model, title : String, group : String, body : Str
         }
 
         updateButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
+            modtime = LocalDateTime.now()
             updateButton.isDisable = true
+
             model.updateNote(oldTitle, titleField.text, groupField.text)
         }
 
         deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            model.deleteNote(title)
+            model.deleteNote(newTitle)
         }
     }
 }

@@ -1,5 +1,6 @@
 package net.codebot.application
 
+import javafx.event.EventHandler
 import javafx.geometry.*
 import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
@@ -63,6 +64,24 @@ class ToolBarClass(private val model: Model): VBox(), IView {
 
     init {
         this.children.addAll(toolbar1, toolbar2)
+        sortBy.apply {
+            valueProperty().addListener {_,_,newval ->
+                model.sortNotify(newval)
+            }
+        }
+
+        includeGrouping.apply{
+            selectedProperty().addListener{_,_,newval ->
+                model.groupNotes(newval)
+            }
+        }
+
+        searchBar.apply {
+            textProperty().addListener { _, _, newval ->
+                model.searchQuery(newval)
+            }
+        }
+
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             // checks to see if the course entered is a valid course
             if (noteTitle.text.isNotEmpty()) {
