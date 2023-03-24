@@ -105,7 +105,7 @@ class ToolBarClass(private val model: Model): VBox(), IView {
         toolbar1.setOnKeyPressed { event ->
             if (event.code == KeyCode.ENTER) {
                 if (noteTitle.text.isNotEmpty()) {
-                    model.createNote(noteTitle.text, group.text)
+                    model.createNote(noteTitle.text, group.text, "")
                 }
             }
         }
