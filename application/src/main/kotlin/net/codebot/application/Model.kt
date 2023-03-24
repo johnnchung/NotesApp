@@ -65,12 +65,11 @@ class Model {
         }
 
         notesMap[title] = Pair(group, content)
-        notesList.add(Note(this, title, group, content))
 
         notesMap[title] = Pair(group, "")
         // main important section for adding to the homepage, create an instance of the note class and
         // add it to the noteslist
-        notesList.add(Note(this, title, group,"",LocalDateTime.now()))
+        notesList.add(Note(this, title, group, content,LocalDateTime.now()))
         updateAllNotes()
         notifyObservers()
     }
