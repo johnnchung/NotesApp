@@ -7,6 +7,7 @@ What's New:
 - Revamped HomePage UI with the following additional features:
     - Ability to sort notes by title and date
     - Ability to group notes
+    - Ability to search notes by their title
     - Change UX interactions by replacing textfields with icons
 
 What's Next:
