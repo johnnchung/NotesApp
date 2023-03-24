@@ -1,4 +1,5 @@
 package net.codebot.application
+import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 
 // This class displays all our notes in the noteList variable in our model
@@ -39,11 +40,9 @@ class NoteView(private val model: Model): VBox(), IView {
     // TODO: Add a search for the body text
     fun searchlist(searchVal:String) {
         if (searchVal != "") {
-            println("hi: $searchVal")
             notelist = ArrayList( notelist.filter {
                 it.getTitle().startsWith(searchVal)
             })
-         //  notelist =  notelist.forEach{ println(it.getTitle())}
         }
 
     }
@@ -59,10 +58,13 @@ class NoteView(private val model: Model): VBox(), IView {
         sortList(model.defaultsort)
         groupList(model.defaultgroup)
         notelist.forEach {
-            this.children.add(it.getBox())
+            val box = it.getBox()
+            setVgrow(box, Priority.ALWAYS)
+            this.children.add(box)
         }
     }
     init {
         model.createView(this)
+        setVgrow(this, Priority.ALWAYS)
     }
 }

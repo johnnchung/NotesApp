@@ -5,16 +5,20 @@ import javafx.geometry.Pos
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.control.TextFormatter
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.layout.CornerRadii
-import javafx.scene.layout.HBox
+import javafx.scene.layout.*
 import javafx.scene.layout.HBox.setHgrow
-import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.scene.shape.Circle
+import javafx.scene.text.Font
+import javafx.scene.text.Text
 import java.time.LocalDateTime
+import org.controlsfx.glyphfont.Glyph
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFontRegistry
+import java.util.*
 
 // This class is how we create a note instance that goes into  the model's notesList and NotesMap.
 class Note(private val model : Model, title : String, group : String, body : String,time:LocalDateTime) {
@@ -28,6 +32,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
     private var modtime =  time
     // The bodyText of our note instance.
     var bodyText = body
+    val random = Random()
     var pureText = model.convertToPure(body)
 
     // Getters for note properties
@@ -57,12 +62,13 @@ class Note(private val model : Model, title : String, group : String, body : Str
         If you edit this field, it will enable the update button.
      */
     val titleField = TextField(title).apply {
-        padding = Insets(5.0)
-        prefWidth = 50.0
-        alignment = Pos.CENTER
+        font = Font.font("System", 18.0)
+        alignment = Pos.CENTER_LEFT
+        border = Border.EMPTY
+        background = null
+        maxWidth = 170.0
         val list = model.getNotesMap()
         textProperty().addListener { _, curVal, newVal ->
-            updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
                 for (notes in list) {
                     // we look for the old title in our map, and set the title to update
@@ -72,6 +78,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
                 }
                 newTitle = newVal
             }
+            model.updateNote(oldTitle, newTitle, groupField.text)
         }
     }
 
@@ -79,16 +86,31 @@ class Note(private val model : Model, title : String, group : String, body : Str
         If you edit this field, it will enable the update button.
      */
     val groupField = TextField(group).apply {
-        padding = Insets(5.0)
-        prefWidth = 50.0
-        alignment = Pos.CENTER
+        font = Font.font("System", 16.0)
+        alignment = Pos.CENTER_LEFT
+        border = Border.EMPTY
+        maxWidth = 75.0
+        background = null
         textProperty().addListener { _, currVal, newVal ->
-            updateButton.isDisable = false
             if(newVal.isNotEmpty()) {
                 oldGroup = currVal
                 newGroup = newVal
             }
         }
+        model.updateNote(oldTitle, newTitle, newGroup)
+    }
+
+    private val titleEditIcon: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.PENCIL).apply {
+        padding = Insets(9.5, 0.0, 0.0, 0.0)
+        alignment = Pos.CENTER_LEFT
+    }
+    private val groupEditIcon: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.PENCIL).apply {
+        padding = Insets(6.5, 0.0, 0.0, 0.0)
+        alignment = Pos.CENTER_LEFT
+    }
+    private val trashIcon: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.TRASH_ALT).apply {
+        fontSize = 20.0
+        padding = Insets(3.0, 3.0, 0.0, 0.0)
     }
 
     /* This is our bodytext field where the body of the note is displayed.
@@ -96,111 +118,50 @@ class Note(private val model : Model, title : String, group : String, body : Str
         NOTE: Currently, we have a max character limit of 50. The text will be truncated if it's length >= 50.
      */
     val bodyDisplay = Label().apply {
-        if (pureText.length != 0) {
-            text = pureText
+        text = if (pureText.isNotEmpty()) {
+            pureText
         } else {
-            text = "New Note: Please edit"
+            "New Note: Please edit"
         }
+        padding = Insets(0.0, 0.0, 0.0, 15.0)
         setHgrow(this, Priority.ALWAYS)
     }
 
-    // This is the editButton for a note instance. When clicked, it opens a new tab pane with the clicked note instance.
-    private val editButton = Button("Edit").apply {
-        padding = Insets(5.0)
-        prefWidth = 40.0
-        // TODO: Create an event listener where when the button is called, we open a new tab pane
-    }
 
-    /* This is the delete button for a note instance.
-       When clicked, it deletes the note instance.
-     */
-    private val deleteButton = Button("Delete").apply {
-        padding = Insets(5.0)
-        prefWidth = 75.0
-    }
-
-    /* This is the update button for a note instance.
-       When clicked and when it is enabled, it will update the note instance.
-     */
-    private val updateButton = Button("Update").apply {
-        padding = Insets(5.0)
-        prefWidth = 75.0
-        isDisable = true
-    }
-
-    // create hBox for each of the fields
-    private val titleBlock = HBox(titleField).apply {
-        padding = Insets(5.0)
-    }
-
-    private val groupBlock = HBox(groupField).apply {
-        padding = Insets(5.0)
-    }
-
+    // create HBox for each of the fields
     private val bodyDisplayBlock = HBox(bodyDisplay).apply {
-        padding = Insets(5.0)
-        setHgrow(this, Priority.ALWAYS)
+        padding = Insets(0.0, 0.0, 0.0, -5.0)
     }
+    private val titleFieldBlock = HBox(titleField, titleEditIcon)
+    private val groupFieldBlock = HBox(groupField, groupEditIcon)
 
-    private val editBlock = HBox(editButton).apply {
-        padding = Insets(5.0)
+    private val combineTitleGroup = VBox(titleFieldBlock, groupFieldBlock, bodyDisplayBlock).apply {
+        alignment = Pos.CENTER_LEFT
     }
-
-    private val  updateBlock = HBox(updateButton).apply {
-        padding = Insets(5.0)
-    }
-
-    private val deleteBlock = HBox(deleteButton).apply {
+    private val deleteBlock = HBox(trashIcon).apply {
         padding = Insets(5.0)
     }
 
     // This joins all the buttons and text fields into one HBox to display.
-    private val block = HBox(titleBlock, groupBlock, bodyDisplayBlock,
-        editBlock, updateBlock, deleteBlock).apply {
+    private val block = HBox(combineTitleGroup, deleteBlock).apply {
         setHgrow(this, Priority.ALWAYS)
+        setHgrow(combineTitleGroup, Priority.ALWAYS)
         maxWidth = Double.MAX_VALUE
+        maxHeight = Double.MAX_VALUE
         padding = Insets(10.0)
-        background = Background(BackgroundFill(Color.LIGHTYELLOW, CornerRadii(5.00), Insets(5.0)))
-        // adds some keyboard functionality to udpate/edit/delete note
+        val color = Color.rgb(random.nextInt(96) + 160, random.nextInt(96) + 160, random.nextInt(96) + 160)
+        background = Background(BackgroundFill(color, CornerRadii(15.0), Insets(10.0)))
+        setOnMouseClicked {
+            model.updateNotesPage(newTitle, newGroup, pureText)
+        }
     }
 
     init {
-        println("Pure Text:")
-        println(pureText)
-        /* This event handler for the edit button will create a new tab pane with the note instance
-           for which edit button was clicked.
-         */
-        editButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            model.updateNotesPage(newTitle, newGroup, pureText)
-        }
-        /* This event handler for the update button will update the title and/or group of the note instance
-           for which the update button was clicked. Before we call updateNote in our model, we update
-           the time of the note instance to the current time. Then, we disable the update button.
-        */
-        updateButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            modtime = LocalDateTime.now()
-            updateButton.isDisable = true
-
-            model.updateNote(oldTitle, titleField.text, groupField.text)
-        }
         /* This event handler for the delete button will delete the note instance
            for which the delete button was clicked.
         */
-        deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
+        trashIcon.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             model.deleteNote(newTitle)
-        }
-
-        // After changing the title/group you can press enter to update the note
-        // instead of dragging mouse over to the update button
-        block.setOnKeyPressed { event ->
-            if (event.code == KeyCode.ENTER) {
-                if (!updateBlock.isDisable) {
-                    modtime = LocalDateTime.now()
-                    updateButton.isDisable = true
-
-                    model.updateNote(oldTitle, titleField.text, groupField.text)
-                }
-            }
         }
     }
 }

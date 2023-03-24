@@ -6,6 +6,7 @@ module application {
     requires javafx.web;
     requires kotlinx.serialization.core;
     requires kotlinx.serialization.json;
+    requires org.controlsfx.controls;
     requires java.sql;
     requires exposed.core;
     requires org.jsoup;

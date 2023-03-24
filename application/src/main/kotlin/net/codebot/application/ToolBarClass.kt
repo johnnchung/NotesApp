@@ -1,11 +1,13 @@
 package net.codebot.application
 
-import javafx.event.EventHandler
 import javafx.geometry.*
 import javafx.scene.control.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
+import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
+import org.controlsfx.glyphfont.GlyphFontRegistry
 
 class ToolBarClass(private val model: Model): VBox(), IView {
     // Create all the components for note creation toolbar
@@ -21,15 +23,15 @@ class ToolBarClass(private val model: Model): VBox(), IView {
         alignment = Pos.CENTER
     }
 
-    private val createButton = Button("Create").apply {
-        padding = Insets(5.0)
-        prefWidth = 50.0
+    private val createButton: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.PLUS_CIRCLE).apply {
+        padding = Insets(0.0, 0.0, 0.0, 5.0)
+        fontSize = 20.0
     }
 
     private val toolbar1 = ToolBar(Label("Note Title:"), noteTitle, Separator(), Label("Group Name:"), group, createButton)
 
     // create components for the search/sort toolbar
-    private val sortLabel = Label("sort by:").apply {
+    private val sortLabel = Label("Sort by:").apply {
         padding = Insets(10.0)
     }
 
@@ -70,24 +72,24 @@ class ToolBarClass(private val model: Model): VBox(), IView {
             let our model know that there is a change of state for the model's default sortoption.
          */
         sortBy.apply {
-            valueProperty().addListener {_,_,newval ->
-                model.sortNotify(newval)
+            valueProperty().addListener {_,_,newVal ->
+                model.sortNotify(newVal)
             }
         }
         /*  We add a listener to the Grouping button. We check if there is a change in our value, then
             let our model know that there is a change of state for the model's defaultgroup value.
         */
         includeGrouping.apply{
-            selectedProperty().addListener{_,_,newval ->
-                model.groupNotes(newval)
+            selectedProperty().addListener{_,_,newVal ->
+                model.groupNotes(newVal)
             }
         }
         /* We add a listener to the searchBar button. We check if there is a change in our value, then
            let our model know that there is a change of state for the model's searchval.
         */
         searchBar.apply {
-            textProperty().addListener { _, _, newval ->
-                model.searchQuery(newval)
+            textProperty().addListener { _, _, newVal ->
+                model.searchQuery(newVal)
             }
         }
 

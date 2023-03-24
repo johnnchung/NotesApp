@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -73,8 +74,6 @@ class Main : Application() {
                 isFitToWidth = true
             }
         }
-
-        // TODO: Add root.middle here for the text field of our notes application
         val root = TabPaneNotes(model, readInput, homePage)
 
         stage.apply {
