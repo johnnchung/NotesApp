@@ -28,6 +28,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
     private var modtime =  time
     // The bodyText of our note instance.
     var bodyText = body
+    var pureText = model.convertToPure(body)
 
     // Getters for note properties
     fun getTitle() : String {
@@ -37,10 +38,14 @@ class Note(private val model : Model, title : String, group : String, body : Str
         return newGroup
     }
     fun getContent() : String {
-        return bodyText
+        return pureText
     }
     fun getBox(): HBox {
         return block
+    }
+
+    fun setContent(str: String) {
+        pureText = str
     }
 
     // Returns the time in LocalDateTime format of when a Note instance was created or modified.
@@ -91,12 +96,10 @@ class Note(private val model : Model, title : String, group : String, body : Str
         NOTE: Currently, we have a max character limit of 50. The text will be truncated if it's length >= 50.
      */
     val bodyDisplay = Label().apply {
-        text = if (text.length >= 50) {
-            text.substring(0,50)
-        } else if (text.isEmpty()){
-            "New Note: Please edit"
+        if (pureText.length != 0) {
+            text = pureText
         } else {
-            text
+            text = "New Note: Please edit"
         }
         setHgrow(this, Priority.ALWAYS)
     }
@@ -162,11 +165,13 @@ class Note(private val model : Model, title : String, group : String, body : Str
     }
 
     init {
+        println("Pure Text:")
+        println(pureText)
         /* This event handler for the edit button will create a new tab pane with the note instance
            for which edit button was clicked.
          */
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            model.updateNotesPage(newTitle, newGroup, bodyText)
+            model.updateNotesPage(newTitle, newGroup, pureText)
         }
         /* This event handler for the update button will update the title and/or group of the note instance
            for which the update button was clicked. Before we call updateNote in our model, we update

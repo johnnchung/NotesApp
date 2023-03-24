@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
 }
 
+
 group = "net.codebot"
 version = "1.0.0"
 
@@ -26,6 +27,11 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.mockito:mockito-core:4.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.xerial:sqlite-jdbc:3.39.3.0")
+    implementation("org.jetbrains.exposed", "exposed-core", "0.40.1")
+    implementation("org.jetbrains.exposed", "exposed-dao", "0.40.1")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.40.1")
+    implementation("org.jsoup:jsoup:1.15.4")
 }
 
 tasks.test {

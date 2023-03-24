@@ -1,6 +1,13 @@
 package net.codebot.application
 
+import javafx.concurrent.Worker
+import javafx.scene.web.WebView
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jsoup.Jsoup
 import java.time.LocalDateTime
+
 
 class Model {
     // List of Views that are subscribed to the model
@@ -49,17 +56,20 @@ class Model {
     }
 
     // Create notes app with title, group, and empty content
-    fun createNote(title: String, group: String) {
+    fun createNote(title: String, group: String, content: String) {
         if (notesMap.containsKey(title)) {
             return
         }
         if (!groupArray.contains(group)) {
             groupArray.add(group)
         }
+
+        notesMap[title] = Pair(group, content)
+
         notesMap[title] = Pair(group, "")
         // main important section for adding to the homepage, create an instance of the note class and
         // add it to the noteslist
-        notesList.add(Note(this, title, group,"",LocalDateTime.now()))
+        notesList.add(Note(this, title, group, content,LocalDateTime.now()))
         updateAllNotes()
         notifyObservers()
     }
@@ -121,6 +131,11 @@ class Model {
     fun updateNotesPage(title: String, group: String, content: String) {
         notePage.clear()
         editedNote = title
+        for(item in notesList) {
+            if(item.getTitle() == title) {
+                item.setContent(content)
+            }
+        }
         notePage.add(NotesPage(this, editedNote))
         closedNotes = true
         openedNotes = true
@@ -133,13 +148,31 @@ class Model {
         notifyObservers()
     }
 
+    fun convertToPure(htmlString : String): String {
+        val doc = Jsoup.parse(htmlString)
+
+        // Find the span element using a CSS selector
+        val span = doc.select("span").first()
+
+        // Extract the text content of the span element
+        val spanContent = span?.text()
+        if (spanContent != null) {
+            return spanContent
+        } else {
+            println("TWO")
+            return htmlString
+        }
+    }
+
     // Save the notes fields
     fun saveNotesContent(title: String, htmlText: String) {
         for(arrItem in getNotesList()) {
             if(arrItem.getTitle() == title) {
                 val index = getNotesList().indexOf(arrItem)
-                notesList[index].bodyDisplay.text = htmlText
-                contentList[index] = htmlText
+                notesList[index].bodyDisplay.text = convertToPure(htmlText)
+                notesList[index].bodyText = htmlText
+                notesList[index].pureText = convertToPure(htmlText)
+                contentList[index] = convertToPure(htmlText)
             }
         }
     }
