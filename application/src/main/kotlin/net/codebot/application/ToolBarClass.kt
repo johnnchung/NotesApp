@@ -66,7 +66,7 @@ class ToolBarClass(private val model: Model): VBox(), IView {
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             // checks to see if the course entered is a valid course
             if (noteTitle.text.isNotEmpty()) {
-                model.createNote(noteTitle.text, group.text)
+                model.createNote(noteTitle.text, group.text, "")
             }
         }
 

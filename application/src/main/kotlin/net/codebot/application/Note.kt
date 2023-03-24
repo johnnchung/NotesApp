@@ -19,6 +19,7 @@ class Note(private val model : Model, title : String, group : String, body : Str
     private var newTitle = title
     private var newGroup = group
     var bodyText = body
+    var pureText = model.convertToPure(body)
 
     // Getters for note properties
     fun getTitle() : String {
@@ -28,10 +29,14 @@ class Note(private val model : Model, title : String, group : String, body : Str
         return newGroup
     }
     fun getContent() : String {
-        return bodyText
+        return pureText
     }
     fun getBox(): HBox {
         return block
+    }
+
+    fun setContent(str: String) {
+        pureText = str
     }
 
     val titleField = TextField(title).apply {
@@ -59,12 +64,10 @@ class Note(private val model : Model, title : String, group : String, body : Str
     }
 
     val bodyDisplay = Label().apply {
-        text = if (text.length >= 50) {
-            text.substring(0,50)
-        } else if (text.isEmpty()){
-            "New Note: Please edit"
+        if (pureText.length != 0) {
+            text = pureText
         } else {
-            text
+            text = "New Note: Please edit"
         }
         setHgrow(this, Priority.ALWAYS)
     }
@@ -121,8 +124,10 @@ class Note(private val model : Model, title : String, group : String, body : Str
     }
 
     init {
+        println("Pure Text:")
+        println(pureText)
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
-            model.updateNotesPage(newTitle, newGroup, bodyText)
+            model.updateNotesPage(newTitle, newGroup, pureText)
         }
 
         updateButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
