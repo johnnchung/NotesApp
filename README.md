@@ -22,6 +22,6 @@ Can either run our Notes.sh console application or download the app from an inst
 	- Note that at this time, there may be some issues with the application as we are in the development phase
 
 ## Releases
-Version 1.5: released March 10th, 2023
+Version 2.0: released March 10th, 2023
 	- release-notes (in releases folder)
 	- Installers (Windows, MacOS)
