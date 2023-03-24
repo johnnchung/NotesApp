@@ -1,5 +1,7 @@
 package net.codebot.application
+
 import javafx.concurrent.Worker
+import javafx.scene.input.KeyCode
 import javafx.scene.web.HTMLEditor
 import javafx.scene.web.WebView
 import org.jetbrains.exposed.sql.insert
@@ -14,6 +16,13 @@ class NotesField(private val model: Model, private val title: String) : HTMLEdit
             }
         }
         model.createView(this)
+
+        // allows the user to use CTRL + S to save the note content
+        this.setOnKeyPressed { event ->
+            if (event.isShortcutDown && event.code == KeyCode.S) {
+                model.saveNotes()
+            }
+        }
     }
     override fun update() {
         if(model.savedNotes) {
