@@ -1,10 +1,5 @@
 package net.codebot.application
 
-import javafx.concurrent.Worker
-import javafx.scene.web.WebView
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
@@ -13,10 +8,10 @@ class Model {
     // List of Views that are subscribed to the model
     private val views : ArrayList<IView> = ArrayList()
     /* A map containing title as the key, the pair contains the following:  "Group" : "Body Text"
-       notesMap is a starter stucture to hold the data, use notesList to do all your functions.
+       notesMap is a starter structure to hold the data, use notesList to do all your functions.
     */
     private val notesMap : MutableMap<String, Pair<String, String>> = mutableMapOf()
-    // Mutablelist of all groups.
+    // MutableList of all groups.
     private val groupArray : MutableList<String> = mutableListOf()
     /* notesList is the arraylist that holds a note instance that is used to display the notes in NoteView. */
     private val notesList: ArrayList<Note> = ArrayList()
@@ -29,10 +24,10 @@ class Model {
     var editedNote = ""
     var notePage = ArrayList<NotesPage>()
 
-    // TODO: Add documentation for these
+    // Variables to keep track of opened and saved states of notes
     var openedNotes = false
     var savedNotes = false
-    var closedNotes = false
+    private var closedNotes = false
 
     /* Default state values for sorting options, default search value for the search bar,
        and if sort by grouping is enabled.
@@ -63,12 +58,10 @@ class Model {
         if (!groupArray.contains(group)) {
             groupArray.add(group)
         }
-
         notesMap[title] = Pair(group, content)
-
         notesMap[title] = Pair(group, "")
         // main important section for adding to the homepage, create an instance of the note class and
-        // add it to the noteslist
+        // add it to the notesList
         notesList.add(Note(this, title, group, content,LocalDateTime.now()))
         updateAllNotes()
         notifyObservers()
@@ -101,7 +94,7 @@ class Model {
     fun updateNote(searchKey: String, title: String, group: String) {
         // notesMap in this function is used for updating purposes only in terms of storing the old
         // values of all notes instances before an update has happened
-        val oldText = notesMap[searchKey]!!.second
+        val oldText = notesMap[searchKey]?.second
         for (notes in notesList) {
             if (notes.titleField.text == title) {
                 notes.titleField.text = title
@@ -110,7 +103,7 @@ class Model {
             }
         }
         notesMap.remove(searchKey)
-        notesMap[title] = Pair(group, oldText)
+        notesMap[title] = Pair(group, oldText) as Pair<String, String>
         updateAllNotes()
         notifyObservers()
     }
@@ -159,7 +152,6 @@ class Model {
         if (spanContent != null) {
             return spanContent
         } else {
-            println("TWO")
             return htmlString
         }
     }
@@ -187,18 +179,18 @@ class Model {
     }
 
     /*  This is called when "By Group" is enabled or disabled. It changes the state of our group variable in the model
-        to whatever newval is, and lets all the views know that there is a change.
+        to whatever newVal is, and lets all the views know that there is a change.
      */
-    fun groupNotes(newval: Boolean) {
-        defaultgroup = newval
+    fun groupNotes(newVal: Boolean) {
+        defaultgroup = newVal
         notifyObservers()
     }
 
     /*  This is called when our Search bar has input. It changes the state of searchval in the model
-      to whatever newval is, and lets all the views know that there is a change.
+      to whatever newVal is, and lets all the views know that there is a change.
    */
-    fun searchQuery(newval: String) {
-        searchval = newval
+    fun searchQuery(newVal: String) {
+        searchval = newVal
         notifyObservers()
     }
 }

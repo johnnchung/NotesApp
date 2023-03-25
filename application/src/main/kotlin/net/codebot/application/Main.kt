@@ -1,5 +1,4 @@
 package net.codebot.application
-
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
@@ -7,14 +6,12 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -23,9 +20,9 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 @Serializable
-data class dataClass(val width : Double, val height : Double,
-                      val xCoord : Double, val yCoord : Double,
-                      val titles : List<String>, val groups : List<String>, val contents : List<String>) {}
+data class DataClass(val width : Double, val height : Double,
+                     val xCoord : Double, val yCoord : Double,
+                     val titles : List<String>, val groups : List<String>, val contents : List<String>) {}
 
 
 class Main : Application() {
@@ -34,11 +31,11 @@ class Main : Application() {
 
         // Json reading
         var fileInput = FileInputStream("data.json")
-        val readInput = Json.decodeFromStream<dataClass>(fileInput)
+        val readInput = Json.decodeFromStream<DataClass>(fileInput)
         var height = -1.0 // readInput.height
         var width =  -1.0// readInput.width
-        var stageX =  -1.0// readInput.xCoord
-        var stageY =  -1.0// readInput.yCoord
+        var stageX =  -1.0// readInput.xCord
+        var stageY =  -1.0// readInput.yCord
         val notesView = NoteView(model)
 
         // Database reading
@@ -57,24 +54,32 @@ class Main : Application() {
 
         if(conn != null) {
             transaction {
-                height = screenData.select{screenData.id eq 1}.single()[screenData.heightVal]
-                width = screenData.select{screenData.id eq 1}.single()[screenData.widthVal]
-                stageX = screenData.select{screenData.id eq 1}.single()[screenData.xCoordVal]
-                stageY = screenData.select{screenData.id eq 1}.single()[screenData.yCoordVal]
+                height = ScreenData.select{ScreenData.id eq 1}.single()[ScreenData.heightVal]
+                width = ScreenData.select{ScreenData.id eq 1}.single()[ScreenData.widthVal]
+                stageX = ScreenData.select{ScreenData.id eq 1}.single()[ScreenData.xCoordVal]
+                stageY = ScreenData.select{ScreenData.id eq 1}.single()[ScreenData.yCoordVal]
             }
         }
 
-        val toolbar = ToolBarClass(model).apply {
+        val toolBarTop = TopToolBar(model).apply {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
-
+        val toolBarLeft = SideToolBar(model)
         val homePage = BorderPane().apply {
-            top = toolbar
             center = ScrollPane(notesView).apply{
                 isFitToWidth = true
             }
         }
-        val root = TabPaneNotes(model, readInput, homePage)
+        val notesDisplay = TabPaneNotes(model, readInput, homePage)
+        val rightBorderPane = BorderPane().apply {
+            top = toolBarTop
+            center = notesDisplay
+        }
+
+        val root = BorderPane().apply {
+            left = toolBarLeft
+            center = rightBorderPane
+        }
 
         stage.apply {
             title = "Island Boys Notes Application"
@@ -93,31 +98,27 @@ class Main : Application() {
 
         stage.setOnCloseRequest {
             try {
-                //val path = System.getProperty("user.dir") + "\\data.json"
                 val file = FileOutputStream("data.json")
-                val dataClassWhole = dataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)
+                val dataClassWhole = DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)
                 val string = Json.encodeToString(dataClassWhole)
                 file.write(string.toByteArray())
 
                 transaction {
-                    if(screenData.selectAll().count() == 0.0.toLong()) {
-                        screenData.insert {
-                            println("Create new instance of data")
+                    if(ScreenData.selectAll().count() == 0.0.toLong()) {
+                        ScreenData.insert {
                             it[widthVal] = width
                             it[heightVal] = height
                             it[xCoordVal] = stage.x
                             it[yCoordVal] = stage.y
                         }
                     } else {
-                        println("Update Data Only")
-                        screenData.update({screenData.id eq 1}) {
+                        ScreenData.update({ScreenData.id eq 1}) {
                             it[widthVal] = width
                             it[heightVal] = height
                             it[xCoordVal] = stage.x
                             it[yCoordVal] = stage.y
                         }
                     }
-
                     SchemaUtils.drop(Users)
                     SchemaUtils.create(Users)
                     for (notes in model.getNotesList()) {
@@ -128,7 +129,6 @@ class Main : Application() {
                                 it[group] = notes.getGroup()
                                 it[content] = notes.getContent()
                             }
-                            println("Inserted")
                         } else {
                             Users.update({ Users.title eq notes.getTitle() }) {
                                 it[group] = notes.getGroup()
