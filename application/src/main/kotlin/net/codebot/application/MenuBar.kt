@@ -33,6 +33,9 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
         return viewText.toString()
     }
 
+    override fun update() {
+    }
+
     init {
         fileOptions.items.addAll(MenuItem("New"), MenuItem("Open"),
             MenuItem("Save").apply {
@@ -65,9 +68,5 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
         }
 
         model.createView(this)
-    }
-
-    override fun update() {
-
     }
 }

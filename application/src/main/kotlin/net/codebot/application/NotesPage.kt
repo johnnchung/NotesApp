@@ -7,9 +7,10 @@ import javafx.scene.layout.VBox
 
 class NotesPage(private var model : Model, private val title: String): BorderPane(), IView {
     private var noteTitle = title
-    private var noteGroup: String? = null
-    private var noteContent: String? = null
     var notes = NotesField(model, noteTitle)
+
+    override fun update() {
+    }
 
     init {
         val menuBar = MenuBarClass(model).apply {
@@ -20,8 +21,5 @@ class NotesPage(private var model : Model, private val title: String): BorderPan
             center = notes
         }
         model.createView(this)
-    }
-
-    override fun update() {
     }
 }
