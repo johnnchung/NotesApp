@@ -91,7 +91,8 @@ class NoteView(private val model: Model): GridPane(), IView {
     private fun searchList(searchVal:String) {
         if (searchVal != "") {
             notelist = ArrayList( notelist.filter {
-                it.getTitle().startsWith(searchVal)
+                it.getTitle().lowercase().startsWith(searchVal) ||
+                it.getTitle().uppercase().startsWith(searchVal)
             })
         }
     }
