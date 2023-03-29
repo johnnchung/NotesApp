@@ -13,9 +13,10 @@ class NotesPage(private var model : Model, private val title: String): BorderPan
     }
 
     init {
-        val menuBar = MenuBarClass(model).apply {
+        this.apply {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
+        val menuBar = MenuBarClass(model)
         this.apply {
             top = VBox(menuBar)
             center = notes

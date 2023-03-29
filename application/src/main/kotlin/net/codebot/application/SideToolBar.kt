@@ -42,15 +42,14 @@ class SideToolBar(private val model: Model): BorderPane(), IView {
            let our model know that there is a new note instance to be made only if our titleField is not empty.
         */
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
+            var title = "Untitled " + "${model.getNotesList().size}"
             // checks to see if the course entered is a valid course
-            model.createNote("Untitled " + "${model.getNotesList().size}", "Group " + "${model.getNotesList().size}", "")
-        }
-
-        // Allows the user to hit enter to create the note if they do not want to move the mouse to hit the create button
-        createButton.setOnKeyPressed { event ->
-            if (event.code == KeyCode.ENTER) {
-                model.createNote("Untitled " + "${model.getNotesList().size}", "Group " + "${model.getNotesList().size}", "")
+            for(note in model.getNotesList()) {
+                if(note.getTitle() == title) {
+                    title = "Untitled " + "${model.getNotesList().size + 1}"
+                }
             }
+            model.createNote(title, "Group " + "${model.getNotesList().size}", "")
         }
     }
 }

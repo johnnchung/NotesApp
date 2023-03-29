@@ -28,7 +28,6 @@ class TopToolBar(private val model: Model): VBox(), IView {
     /*  We add a listener to the Menu Items. We check if there is a change in our value, then
         let our model know that there is a change of state for the model's ordering.
     */
-    // TODO: Fix the alignment of the text to the left
     private val sortByTitle = MenuItem().apply {
         graphic = Text("Sort By Title").apply {
             textAlignment = TextAlignment.LEFT
@@ -45,29 +44,25 @@ class TopToolBar(private val model: Model): VBox(), IView {
             model.sortNotify("Date")
         }
     }
-    private val groupDropdown = MenuItem().apply {
+    private val groupDropdown = CheckMenuItem().apply {
         graphic = Text("Include Grouping").apply {
             textAlignment = TextAlignment.LEFT
         }
         setOnAction {
-            model.groupNotes(true)
+            model.groupNotes(isSelected)
         }
     }
 
     override fun update() {
     }
 
-    private val ellipseButton: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.ELLIPSIS_V).apply {
+    private val ellipseButton: MenuButton = MenuButton("", GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.ELLIPSIS_V).apply {
         fontSize = 20.0
         cursor = Cursor.HAND
-        setOnMouseClicked {
-            val contextMenu = ContextMenu()
-            contextMenu.items.addAll(sortByTitle, sortByDate, groupDropdown)
-            contextMenu.show(this, Side.BOTTOM, 0.0, 0.0)
-        }
         padding = Insets(0.0, 10.0, 0.0, 10.0)
         nodeOrientation = NodeOrientation.RIGHT_TO_LEFT
-    }
+    }, sortByTitle, sortByDate, groupDropdown)
+
     private val toolBarTop = ToolBar(searchBar, searchIcon, ellipseButton).apply {
         maxWidth = Double.MAX_VALUE
         minHeight = 60.0

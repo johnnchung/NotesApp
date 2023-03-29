@@ -14,6 +14,11 @@ class NotesField(private val model: Model, private val title: String) : HTMLEdit
     }
 
     init {
+        this.lookup(".web-view").style = "-fx-pref-height: 1000;"
+        this.heightProperty().addListener {_, _, newHeight ->
+            minHeight = newHeight.toDouble()
+        }
+        //minHeight = scene.height * 0.6
         for(note in model.getNotesList()) {
             if(note.getTitle() == title) {
                 this.htmlText = note.bodyText

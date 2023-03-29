@@ -1,11 +1,13 @@
 package net.codebot.application
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -69,6 +71,7 @@ class Main : Application() {
             center = ScrollPane(notesView).apply{
                 isFitToWidth = true
             }
+            HBox.setHgrow(this, Priority.ALWAYS)
         }
         val notesDisplay = TabPaneNotes(model, readInput, homePage)
         val rightBorderPane = BorderPane().apply {
@@ -130,6 +133,7 @@ class Main : Application() {
                                 it[content] = notes.getContent()
                             }
                         } else {
+                            println("Update:")
                             Users.update({ Users.title eq notes.getTitle() }) {
                                 it[group] = notes.getGroup()
                                 it[content] = notes.getContent()
