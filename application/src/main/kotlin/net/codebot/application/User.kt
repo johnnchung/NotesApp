@@ -4,8 +4,8 @@ import net.codebot.application.Users.autoIncrement
 import org.jetbrains.exposed.sql.Table
 
 object Users : Table() {
-    val title = varchar("title", 50)
-    val group = varchar("groups", 50)
-    val content = varchar("Content", 300)
+    val title = varchar("title", Integer.MAX_VALUE)
+    val group = varchar("groups", Integer.MAX_VALUE)
+    val content = varchar("Content", Integer.MAX_VALUE)
     override val primaryKey = PrimaryKey(title)
 }

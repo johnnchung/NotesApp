@@ -2,6 +2,7 @@ package net.codebot.application
 
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class Model {
@@ -62,7 +63,8 @@ class Model {
         notesMap[title] = Pair(group, "")
         // main important section for adding to the homepage, create an instance of the note class and
         // add it to the notesList
-        notesList.add(Note(this, title, group, content,LocalDateTime.now()))
+        val now = LocalDateTime.now()
+        notesList.add(Note(this, title, group, content, now))
         updateAllNotes()
         notifyObservers()
     }
@@ -144,13 +146,18 @@ class Model {
     fun convertToPure(htmlString : String): String {
         val doc = Jsoup.parse(htmlString)
 
-        // Find the span element using a CSS selector
-        val span = doc.select("span").first()
+        // Find the body element using a CSS selector
+        val body = doc.select("body").first()
 
-        // Extract the text content of the span element
-        val spanContent = span?.text()
-        if (spanContent != null) {
-            return spanContent
+        // Extract the text content of the body element
+        val bodyContent = body?.text()
+
+        // Update homepage text limit
+        for(notes in notesList) {
+            notes.update()
+        }
+        if(bodyContent != null) {
+            return bodyContent
         } else {
             return htmlString
         }
@@ -164,7 +171,7 @@ class Model {
                 notesList[index].bodyDisplay.text = convertToPure(htmlText)
                 notesList[index].bodyText = htmlText
                 notesList[index].pureText = convertToPure(htmlText)
-                contentList[index] = convertToPure(htmlText)
+                contentList[index] = htmlText
             }
         }
     }

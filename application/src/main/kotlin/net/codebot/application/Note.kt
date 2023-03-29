@@ -14,11 +14,13 @@ import javafx.scene.text.FontWeight
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import org.controlsfx.glyphfont.GlyphFontRegistry
+import org.jsoup.Jsoup
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 // This class is how we create a note instance that goes into  the model's notesList and NotesMap.
-class Note(private val model: Model, title: String, group: String, body: String, time: LocalDateTime) {
+class Note(private val model: Model, title: String, group: String, body: String, time: LocalDateTime): IView {
     // We save the old title and group for update purposes.
     private var oldTitle = title
     private var oldGroup = group
@@ -40,7 +42,7 @@ class Note(private val model: Model, title: String, group: String, body: String,
         return newGroup
     }
     fun getContent() : String {
-        return pureText
+        return bodyText
     }
     fun getBox(): HBox {
         return block
@@ -52,6 +54,21 @@ class Note(private val model: Model, title: String, group: String, body: String,
     // Returns the time in LocalDateTime format of when a Note instance was created or modified.
     fun getTime(): LocalDateTime? {
         return modtime
+    }
+    // Convert pure text to body html text
+    fun localConversion(htmlString : String): String {
+        val doc = Jsoup.parse(htmlString)
+
+        // Find the body element using a CSS selector
+        val body = doc.select("body").first()
+
+        // Extract the text content of the body element
+        val bodyContent = body?.text()
+        if(bodyContent != null) {
+            return bodyContent
+        } else {
+            return htmlString
+        }
     }
     /*
         Icons for a singular note box
@@ -72,6 +89,9 @@ class Note(private val model: Model, title: String, group: String, body: String,
         fontSize = 22.5
         padding = Insets(0.0, 10.0, 10.0, 0.0)
     }
+    // Keep track of editing state for title and group
+    private var editTitle = false
+    private var editGroup = false
 
     /* This is our title field where the title of the note is displayed.
         If you edit this field, it will enable the update button.
@@ -94,6 +114,7 @@ class Note(private val model: Model, title: String, group: String, body: String,
         border = Border.EMPTY
         maxWidth = 75.0
         background = null
+        isEditable = false
     }
 
     /* This is our bodyText field where the body of the note is displayed.
@@ -105,16 +126,9 @@ class Note(private val model: Model, title: String, group: String, body: String,
             text = "New Note: Please edit"
         } else {
             // We will take the substring up to the 3rd word to display on the front
-            var count = 0
-            var endIndex = 0
-            for (i in pureText.indices) {
-                if (pureText[i] == ' ') {
-                    count++
-                    if (count == 3 || i == pureText.length - 1) {
-                        endIndex = i
-                        break
-                    }
-                }
+            var endIndex = pureText.length
+            if(pureText.length > 10) {
+                endIndex = 5
             }
             text = pureText.substring(0, endIndex) + "...";
         }
@@ -150,6 +164,24 @@ class Note(private val model: Model, title: String, group: String, body: String,
         border = Border(BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii(25.0), BorderWidths(2.0)))
     }
 
+    override fun update() {
+        pureText = localConversion(bodyText)
+        bodyDisplay.apply {
+            if(pureText.isEmpty()) {
+                text = "New Note: Please edit"
+            } else {
+                // We will take the substring up to the 3rd word to display on the front
+                var endIndex = pureText.length
+                if(pureText.length > 10) {
+                    endIndex = 5
+                }
+                text = pureText.substring(0, endIndex) + "...";
+            }
+            padding = Insets(0.0, 0.0, 0.0, 15.0)
+            setHgrow(this, Priority.ALWAYS)
+        }
+    }
+
     init {
         /* This event handler for the delete will delete the note instance
            for which the delete button was clicked.
@@ -163,6 +195,8 @@ class Note(private val model: Model, title: String, group: String, body: String,
         titleEditIcon.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             titleField.apply {
                 isEditable = true
+                trashIcon.isDisable = true
+                openIcon.isDisable = true
                 val list = model.getNotesMap()
                 textProperty().addListener { _, curVal, newVal ->
                     if(newVal.isNotEmpty()) {
@@ -174,29 +208,48 @@ class Note(private val model: Model, title: String, group: String, body: String,
                         }
                         newTitle = newVal
                     }
-                    model.updateNote(oldTitle, newTitle, groupField.text)
+                    editTitle = !list.contains(newTitle)
                 }
+
                 // Only edit the title field again if the user hits enter
                 setOnKeyPressed { event ->
-                    if (event.code == KeyCode.ENTER) {
+                    if (event.code == KeyCode.ENTER && (editTitle || newTitle == oldTitle)) {
                         isEditable = false
+                        if(!editGroup) {
+                            trashIcon.isDisable = false
+                            openIcon.isDisable = false
+                        }
+                        editTitle = false
+                        model.updateNote(oldTitle, newTitle, groupField.text)
+                        oldTitle = newTitle
+                        modtime = LocalDateTime.now()
                     }
                 }
             }
         }
         groupEditIcon.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             groupField.apply {
+                isEditable = true
+                trashIcon.isDisable = true
+                openIcon.isDisable = true
                 textProperty().addListener { _, currVal, newVal ->
                     if(newVal.isNotEmpty()) {
                         oldGroup = currVal
                         newGroup = newVal
                     }
+                    editGroup = true
                 }
-                model.updateNote(oldTitle, newTitle, newGroup)
                 // Only edit the group field again if the user hits enter
                 setOnKeyPressed { event ->
                     if (event.code == KeyCode.ENTER) {
                         isEditable = false
+                        if(!editTitle) {
+                            trashIcon.isDisable = false
+                            openIcon.isDisable = false
+                        }
+                        editGroup = false
+                        model.updateNote(oldTitle, newTitle, newGroup)
+                        modtime = LocalDateTime.now()
                     }
                 }
             }
