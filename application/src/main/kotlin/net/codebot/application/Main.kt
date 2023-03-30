@@ -1,13 +1,11 @@
 package net.codebot.application
 import javafx.application.Application
 import javafx.application.Platform
-import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
