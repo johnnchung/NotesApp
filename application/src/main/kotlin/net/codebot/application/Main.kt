@@ -15,6 +15,10 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -24,6 +28,44 @@ data class DataClass(val width : Double, val height : Double,
                      val xCoord : Double, val yCoord : Double,
                      val titles : List<String>, val groups : List<String>, val contents : List<String>) {}
 
+fun get(): String {
+    val client = HttpClient.newBuilder().build()
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create("http://localhost:8080/notes"))
+        .GET()
+        .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+    return response.body()
+}
+fun post(note: DataClass): String {
+    val string = Json.encodeToString(note)
+    val client = HttpClient.newBuilder().build();
+
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create("http://localhost:8080/notes"))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(string))
+        .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    println(response.statusCode())
+    return response.body()
+}
+fun put(note: DataClass, title: String): String {
+    val string = Json.encodeToString(note)
+    val client = HttpClient.newBuilder().build();
+
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create("http://localhost:8080/notes/${title}"))
+        .header("Content-Type", "application/json")
+        .PUT(HttpRequest.BodyPublishers.ofString(string))
+        .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    println(response.statusCode())
+    return response.body()
+}
 
 class Main : Application() {
     override fun start(stage: Stage) {
@@ -98,6 +140,9 @@ class Main : Application() {
         }
 
         stage.setOnCloseRequest {
+            // val postResponse = post(DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList))
+            val putResponse = put(DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList), "cs240")
+            val getResponse = get()
             try {
                 val file = FileOutputStream("data.json")
                 val dataClassWhole = DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)

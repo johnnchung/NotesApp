@@ -1,84 +1,74 @@
 package com.example.demo
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
 @Serializable
 data class Messages(val id: String, val text: String)
 
-
 @SpringBootApplication
 class DemoApplication
 
+@Serializable
+data class DataC(val width : Double, val height : Double,
+				val xCoord : Double, val yCoord : Double,
+				val titles : List<String>, val groups : List<String>, val contents : List<String>) {}
+
 fun main(args: Array<String>) {
 	runApplication<DemoApplication>(*args)
-	val postResponse = post(DataClass(0.0, 0.0, 0.0, 0.0, listOf<String>(), listOf<String>(), listOf<String>()))
-	val get_response = get()
-	println(get_response)
 }
+
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/notes")
 class MessageResource(val service: MessageService) {
 	@GetMapping
-	fun index(): List<Messages> = service.findMessages()
+	fun index(): List<DataC> = service.getNotesData()
 
 	@PostMapping
-	fun post(@RequestBody message: Messages) {
-		service.post(message)
+	fun post(@RequestBody note: DataC) {
+		service.post(note)
+	}
+	@PutMapping("/{title}")
+	fun put(@PathVariable title: String, @RequestBody note: DataC) {
+		// Should be the new fields that the user enters
+		val dataC = DataC(
+			width = 10.0,
+			height = 20.0,
+			xCoord = 30.0,
+			yCoord = 40.0,
+			titles = listOf("Title 1", "Title 2"),
+			groups = listOf("Group 1", "Group 2"),
+			contents = listOf("Content 1", "Content 2")
+		)
+		service.put(title, dataC)
 	}
 }
-
-
-data class DataClass(val width : Double, val height : Double,
-					val xCoord : Double, val yCoord : Double,
-					val titles : List<String>, val groups : List<String>, val contents : List<String>)
 
 @Service
 class MessageService {
-	var messages: MutableList<Messages> = mutableListOf()
+	var notes: MutableList<DataC> = mutableListOf()
+	fun getNotesData() = notes
+	fun post(note: DataC) {
+		notes.add(note)
+	}
 
-	fun findMessages() = messages
-	fun post(message: Messages) {
-		messages.add(message)
+	fun put(changeTitle: String, newNote: DataC) {
+		if (notes.contains(newNote)) {
+			for(note in notes) {
+				for(noteTitle in note.titles) {
+					if(noteTitle == changeTitle) {
+						val idx = notes.indexOf(note)
+						notes[idx] = newNote
+					}
+				}
+			}
+		} else {
+			notes.add(newNote)
+		}
 	}
 }
 
-fun get(): String {
-	val client = HttpClient.newBuilder().build()
-	val request = HttpRequest.newBuilder()
-		.uri(URI.create("http://localhost:8080/messages"))
-		.GET()
-		.build()
-
-	val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-	return response.body()
-}
-
-fun post(message: DataClass): String {
-	val string = Json.encodeToString(message)
-	println(string)
-
-	val client = HttpClient.newBuilder().build();
-	println(client)
-	val request = HttpRequest.newBuilder()
-		.uri(URI.create("http://localhost:8080/messages"))
-		.header("Content-Type", "application/json")
-		.POST(HttpRequest.BodyPublishers.ofString(string))
-		.build()
-
-	println(request)
-
-	val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-	println(response.statusCode())
-	return response.body()
-}

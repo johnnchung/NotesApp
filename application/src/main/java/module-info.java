@@ -10,5 +10,6 @@ module application {
     requires java.sql;
     requires exposed.core;
     requires org.jsoup;
+    requires java.net.http;
     exports net.codebot.application;
 }
