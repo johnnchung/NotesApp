@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.codebot.application.NotesFieldTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-31T18:43:49" hostname="v1040-wn-rt-a-18-212.campus-dynamic.uwaterloo.ca" time="0.003">
-  <properties/>
-  <testcase name="getText()" classname="net.codebot.application.NotesFieldTest" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

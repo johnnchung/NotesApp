@@ -3,8 +3,6 @@ package net.codebot.application
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
 
 // readInput: Users
 class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: BorderPane): TabPane(), IView {
@@ -26,11 +24,9 @@ class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: Bor
     init {
         this.apply {
             tabs.add(Tab("Home", homePage))
-            transaction {
-                for (notes in Users.selectAll()) {
-                    model.createNote(notes[Users.title], notes[Users.group], notes[Users.content])
-                }
-            }
+             for(i in 0 until readInput.titles.size) {
+                 model.createNote(readInput.titles.elementAt(i), readInput.groups.elementAt(i), readInput.contents.elementAt(i))
+             }
             val homeTab = tabs[0]
             homeTab.isClosable = false
         }

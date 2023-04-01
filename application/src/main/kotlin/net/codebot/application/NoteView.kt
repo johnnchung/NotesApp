@@ -7,13 +7,12 @@ import javafx.scene.layout.RowConstraints
 
 // This class displays all our notes in the noteList variable in our model
 class NoteView(private val model: Model): GridPane(), IView {
-    /* Called when we notify this view.
-       We first search the notesList based on the model's search query, then sort the list based on the model's
-       sort value, and finally, we group any notes that have the same group in the notesList.
-     */
+    // Called when we notify this view.
+    // We first search the notesList based on the model's search query, then sort the list based on the model's
+    // sort value, and finally, we group any notes that have the same group in the notesList.
     override fun update() {
         notelist = model.getNotesList()
-        searchList(model.searchval)
+        searchList(model. searchval)
         sortList(model.defaultsort)
         groupList(model.defaultgroup)
 
@@ -54,10 +53,9 @@ class NoteView(private val model: Model): GridPane(), IView {
     }
 
     // Create an empty temporary notesList
-    private var notelist : ArrayList<Note> = ArrayList()
+    private var notelist : ArrayList<NoteBlock> = ArrayList()
 
-    /* This function takes in a sorting option, then sorts our noteList either Title or Date.
-     */
+    // This function takes in a sorting option, then sorts our noteList either Title or Date.
     private fun sortList(sortVal: String) {
         if (sortVal == "Title") {
             notelist.sortBy {
@@ -71,9 +69,8 @@ class NoteView(private val model: Model): GridPane(), IView {
         }
     }
 
-    /* This function takes in a boolean value, then sorts our noteList by Grouping if it is true.
-        Otherwise, sort the list by the model's sort value.
-     */
+    // This function takes in a boolean value, then sorts our noteList by Grouping if it is true.
+    // Otherwise, sort the list by the model's sort value.
     private fun groupList(groupVal: Boolean) {
         if (groupVal) {
             notelist.sortBy {
@@ -84,10 +81,8 @@ class NoteView(private val model: Model): GridPane(), IView {
         }
     }
 
-    /* This function takes in a search query, then it filters the noteList array and only displays the notes
-       that have a prefix of searchVal.
-    */
-    // TODO: Add a search for the body text
+    // This function takes in a search query, then it filters the noteList array and only displays the notes
+    // that have a prefix of searchVal.
     private fun searchList(searchVal:String) {
         if (searchVal != "") {
             notelist = ArrayList( notelist.filter {

@@ -3,7 +3,6 @@ package net.codebot.application
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.Label
-import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
@@ -38,9 +37,9 @@ class SideToolBar(private val model: Model): BorderPane(), IView {
         this.prefWidth = 100.0
         this.top = notesHeader
         this.center = displayCreateButton
-        /* We add a listener to the create button. When it is clicked, we
-           let our model know that there is a new note instance to be made only if our titleField is not empty.
-        */
+
+        // We add a listener to the create button. When it is clicked, we
+        // let our model know that there is a new note instance to be made only if our titleField is not empty.
         createButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             var title = "Untitled " + "${model.getNotesList().size}"
             // checks to see if the course entered is a valid course
