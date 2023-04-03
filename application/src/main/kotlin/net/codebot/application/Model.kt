@@ -60,7 +60,7 @@ class Model {
     // HTTP Protocols (REST) for supporting web service and JSON layers
     // ************************************************************************************************//
     // TODO: We should move this variable to a config file
-    private val SERVERADDRESS = "http://localhost:8080/notes"
+    private val SERVERADDRESS = "http://54.196.48.209:8080/notes"
 
     // Retrieves the notes passed through the web service from the JSON layer
     fun get(): String {

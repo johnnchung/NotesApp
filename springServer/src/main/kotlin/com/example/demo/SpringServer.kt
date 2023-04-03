@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 @SpringBootApplication
 class SpringServer
@@ -47,17 +49,24 @@ class NotesService {
 
 	// Retrieve list of notes
 	fun getAllNotes(): NotesSchema {
-		// TODO: Rather than reading from JSON locally, we can load this from the cloud service now
-		var fileInput = FileInputStream("C:\\Users\\John Chung\\cs346-project\\application\\data.json")
+		var fileInput = URL("https://s3.amazonaws.com/notesapplicationbucket/data.json").openStream()
 		return Json.decodeFromStream(fileInput)
 	}
 
 	// Updates list of notes, creating a new one if it does not already exist
 	fun put(newNote: NotesSchema) {
-		// TODO: Rather than reading from JSON locally, we can load this from the cloud service now
-		val file = FileOutputStream("C:\\Users\\John Chung\\cs346-project\\application\\data.json")
+		val url = URL("https://s3.amazonaws.com/notesapplicationbucket/data.json")
+		val connection = url.openConnection() as HttpURLConnection
+		connection.requestMethod = "PUT"
+		connection.doOutput = true
+		connection.setRequestProperty("Content-Type", "application/json")
 		val string = Json.encodeToString(newNote)
-		file.write(string.toByteArray())
+		connection.outputStream.use { outputStream ->
+			outputStream.write(string.toByteArray())
+		}
+		if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+			throw RuntimeException("Failed to update data: ${connection.responseCode}")
+		}
 		notes = newNote
 	}
 }
