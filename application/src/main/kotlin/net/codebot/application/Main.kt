@@ -3,6 +3,7 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
@@ -38,6 +39,23 @@ class Main : Application() {
         val homePage = BorderPane().apply {
             center = ScrollPane(notesView).apply{
                 isFitToWidth = true
+                setOnKeyPressed { event ->
+                    if (event.isShortcutDown && event.code == KeyCode.N) {
+                        var title = "Untitled " + "${model.getNotesList().size}"
+                        // checks to see if the course entered is a valid course
+                        for(note in model.getNotesList()) {
+                            if(note.getTitle() == title) {
+                                var counter = 1
+                                title = "Untitled " + "${model.getNotesList().size + 1}"
+                                while(title in model.titleList) {
+                                    counter += 1
+                                    title = "Untitled " + "${model.getNotesList().size + counter}"
+                                }
+                            }
+                        }
+                        model.createNote(title, "Group " + "${model.getNotesList().size}", "")
+                    }
+                }
             }
             HBox.setHgrow(this, Priority.ALWAYS)
         }
@@ -66,7 +84,6 @@ class Main : Application() {
         stage.widthProperty().addListener { _, _, newWidth ->
             width = newWidth.toDouble()
         }
-
         stage.setOnCloseRequest {
             try {
                 // When the application closes, push new changes made to our applications data into JSON file

@@ -3,6 +3,7 @@ package net.codebot.application
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.Label
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
@@ -45,7 +46,12 @@ class SideToolBar(private val model: Model): BorderPane(), IView {
             // checks to see if the course entered is a valid course
             for(note in model.getNotesList()) {
                 if(note.getTitle() == title) {
+                    var counter = 1
                     title = "Untitled " + "${model.getNotesList().size + 1}"
+                    while(title in model.titleList) {
+                        counter += 1
+                        title = "Untitled " + "${model.getNotesList().size + counter}"
+                    }
                 }
             }
             model.createNote(title, "Group " + "${model.getNotesList().size}", "")

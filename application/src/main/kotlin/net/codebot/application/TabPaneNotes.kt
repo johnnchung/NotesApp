@@ -10,16 +10,28 @@ class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: Bor
         if(model.openedNotes) {
             for(note in model.getNotesList()) {
                 if(note.getTitle() == model.editedNote) {
-                    tabs.add(Tab(note.getTitle(), model.notePage[0]).apply {
-                        setOnCloseRequest {
-                            model.notePage[0].notes.htmlText = ""
+                    val existingTab = tabs.find { it.text == note.getTitle() }
+                    if (existingTab != null) {
+                        // If the tab already exists, select it and update its content
+                        selectionModel.select(existingTab)
+                        model.notePage[0].notes.htmlText = note.getContent()
+                    } else if(tabs.size < 2) {
+                        // If the tab doesn't exist, create a new tab and add it to the TabPane
+                        val newTab = Tab(note.getTitle(), model.notePage[0]).apply {
+                            setOnCloseRequest {
+                                model.notePage[0].notes.htmlText = ""
+                            }
                         }
-                    })
+                        tabs.add(newTab)
+                        // Select the new tab
+                        selectionModel.select(newTab)
+                    }
                 }
             }
             model.openedNotes = false
         }
     }
+
 
     init {
         this.apply {
