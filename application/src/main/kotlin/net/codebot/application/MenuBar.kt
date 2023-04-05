@@ -1,38 +1,50 @@
 package net.codebot.application
 
+import javafx.scene.Node
 import javafx.scene.control.*
+import javafx.scene.layout.BorderPane
+import javafx.scene.web.HTMLEditor
 
-class MenuBarClass(private val model: Model): MenuBar(), IView {
+class MenuBarClass(private val model: Model, private val homePage: Node) : MenuBar(), IView {
     private val fileOptions = Menu("File")
-
-    // Temporary placeholders for event handlers
-    private var fileText: String? = null
-
-    // Getters for menu bar
-    fun getFileOptions(): Menu {
-        return fileOptions
-    }
-    fun getFileText(): String{
-        return fileText.toString()
-    }
+    private val viewOptions = Menu("View")
 
     override fun update() {
     }
 
     init {
-        // TODO: Apply logic for MenuItem exit
+        // File menu items
         fileOptions.items.addAll(MenuItem("Save").apply {
-                setOnAction {
-                    model.saveNotes()
-                } }, SeparatorMenuItem(), MenuItem("Exit")
-        )
-        this.menus.addAll(fileOptions)
+            setOnAction {
+                model.saveNotes()
+            }
+        })
+
+        // View menu items
+        val zoomInItem = MenuItem("Zoom In")
+        val zoomOutItem = MenuItem("Zoom Out")
+        viewOptions.items.addAll(zoomInItem, zoomOutItem)
 
         // Event handlers within the menu bar
-        this.fileOptions.setOnAction { event ->
+        fileOptions.setOnAction { event ->
             val selectedOption = event.target as MenuItem
-            fileText = selectedOption.text
+            when (selectedOption.text) {
+                "Save" -> model.saveNotes()
+            }
         }
+
+        zoomInItem.setOnAction {
+            homePage.scaleX *= 1.1
+            homePage.scaleY *= 1.1
+        }
+
+        zoomOutItem.setOnAction {
+            homePage.scaleX /= 1.1
+            homePage.scaleY /= 1.1
+        }
+
+        // Add menus to menu bar
+        this.menus.addAll(fileOptions, viewOptions)
         model.createView(this)
     }
 }

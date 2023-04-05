@@ -1,5 +1,6 @@
 package net.codebot.application
 
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
@@ -16,10 +17,13 @@ class NotesPage(private var model : Model, private val title: String): BorderPan
         this.apply {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
-        val menuBar = MenuBarClass(model)
+        this.apply {
+            center = notes
+        }
+        val zoomInField = this.center.lookup(".web-view")
+        val menuBar = MenuBarClass(model, zoomInField)
         this.apply {
             top = VBox(menuBar)
-            center = notes
         }
         model.createView(this)
     }

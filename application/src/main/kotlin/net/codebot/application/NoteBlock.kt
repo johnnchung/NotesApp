@@ -32,6 +32,7 @@ class NoteBlock(private val model: Model, title: String, group: String, body: St
     var bodyText = body
     var pureText = model.convertToPure(body)
     private val random = Random()
+    private var counter = 0
 
     // Getters and setters for note properties
     fun getTitle() : String {
