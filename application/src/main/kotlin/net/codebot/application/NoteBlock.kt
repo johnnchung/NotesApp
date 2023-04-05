@@ -16,11 +16,10 @@ import org.controlsfx.glyphfont.Glyph
 import org.controlsfx.glyphfont.GlyphFontRegistry
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-// This class is how we create a note instance that goes into  the model's notesList and NotesMap.
-class Note(private val model: Model, title: String, group: String, body: String, time: LocalDateTime): IView {
+// This class is how we create a note instance that goes into the model's notesList and NotesMap.
+class NoteBlock(private val model: Model, title: String, group: String, body: String, time: LocalDateTime): IView {
     // We save the old title and group for update purposes.
     private var oldTitle = title
     private var oldGroup = group
@@ -56,7 +55,7 @@ class Note(private val model: Model, title: String, group: String, body: String,
         return modtime
     }
     // Convert pure text to body html text
-    fun localConversion(htmlString : String): String {
+    private fun localConversion(htmlString : String): String {
         val doc = Jsoup.parse(htmlString)
 
         // Find the body element using a CSS selector
@@ -70,9 +69,7 @@ class Note(private val model: Model, title: String, group: String, body: String,
             return htmlString
         }
     }
-    /*
-        Icons for a singular note box
-    */
+    // Icons for a singular note box
     private val titleEditIcon: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.PENCIL).apply {
         padding = Insets(9.5, 0.0, 0.0, 0.0)
         alignment = Pos.CENTER_LEFT
@@ -93,9 +90,8 @@ class Note(private val model: Model, title: String, group: String, body: String,
     private var editTitle = false
     private var editGroup = false
 
-    /* This is our title field where the title of the note is displayed.
-        If you edit this field, it will enable the update button.
-     */
+    // This is our title field where the title of the note is displayed.
+    // If you edit this field, it will enable the update button.
     val titleField = TextField(title).apply {
         font = Font.font("System",FontWeight.BOLD, 18.0)
         alignment = Pos.CENTER_LEFT
@@ -105,9 +101,8 @@ class Note(private val model: Model, title: String, group: String, body: String,
         isEditable = false
     }
 
-    /* This is our group field where the group of the note is displayed.
-        If you edit this field, it will enable the update button.
-     */
+    // This is our group field where the group of the note is displayed.
+    // If you edit this field, it will enable the update button.
     val groupField = TextField(group).apply {
         font = Font.font("System", 14.0)
         alignment = Pos.CENTER_LEFT
@@ -117,10 +112,9 @@ class Note(private val model: Model, title: String, group: String, body: String,
         isEditable = false
     }
 
-    /* This is our bodyText field where the body of the note is displayed.
-        If there is nothing in our bodyText, we will display "New Note: Please edit."
-        NOTE: Currently, we have a max character limit of 50. The text will be truncated if it's length >= 50.
-     */
+    // This is our bodyText field where the body of the note is displayed.
+    // If there is nothing in our bodyText, we will display "New Note: Please edit."
+    // NOTE: Currently, we have a max character limit of 50. The text will be truncated if it's length >= 50.
     val bodyDisplay = Label().apply {
         if(pureText.isEmpty()) {
             text = "New Note: Please edit"
@@ -183,9 +177,8 @@ class Note(private val model: Model, title: String, group: String, body: String,
     }
 
     init {
-        /* This event handler for the delete will delete the note instance
-           for which the delete button was clicked.
-        */
+        // This event handler for the delete will delete the note instance
+        // for which the delete button was clicked.
         trashIcon.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             model.deleteNote(newTitle)
         }

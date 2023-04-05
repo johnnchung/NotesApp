@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox
 
 class NotesPage(private var model : Model, private val title: String): BorderPane(), IView {
     private var noteTitle = title
-    var notes = NotesField(model, noteTitle)
+    var notes = NotesTextEditor(model, noteTitle)
 
     override fun update() {
     }

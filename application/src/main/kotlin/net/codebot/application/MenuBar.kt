@@ -4,9 +4,9 @@ import javafx.scene.control.*
 
 class MenuBarClass(private val model: Model): MenuBar(), IView {
     private val fileOptions = Menu("File")
+
     // Temporary placeholders for event handlers
     private var fileText: String? = null
-
 
     // Getters for menu bar
     fun getFileOptions(): Menu {
@@ -20,6 +20,7 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
     }
 
     init {
+        // TODO: Apply logic for MenuItem exit
         fileOptions.items.addAll(MenuItem("Save").apply {
                 setOnAction {
                     model.saveNotes()
@@ -28,12 +29,10 @@ class MenuBarClass(private val model: Model): MenuBar(), IView {
         this.menus.addAll(fileOptions)
 
         // Event handlers within the menu bar
-        // TODO: Add controller logic for each menu bar item
         this.fileOptions.setOnAction { event ->
             val selectedOption = event.target as MenuItem
             fileText = selectedOption.text
         }
-
         model.createView(this)
     }
 }

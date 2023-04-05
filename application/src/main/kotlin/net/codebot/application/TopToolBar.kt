@@ -25,9 +25,8 @@ class TopToolBar(private val model: Model): VBox(), IView {
         maxWidth = Double.MAX_VALUE
     }
 
-    /*  We add a listener to the Menu Items. We check if there is a change in our value, then
-        let our model know that there is a change of state for the model's ordering.
-    */
+    // We add a listener to the Menu Items. We check if there is a change in our value, then
+    // let our model know that there is a change of state for the model's ordering.
     private val sortByTitle = MenuItem().apply {
         graphic = Text("Sort By Title").apply {
             textAlignment = TextAlignment.LEFT
@@ -71,9 +70,8 @@ class TopToolBar(private val model: Model): VBox(), IView {
 
     init {
         this.children.add(toolBarTop)
-        /* We add a listener to the searchBar button. We check if there is a change in our value, then
-           let our model know that there is a change of state for the model's search val.
-        */
+        // We add a listener to the searchBar button. We check if there is a change in our value, then
+        // let our model know that there is a change of state for the model's search val.
         searchBar.apply {
             textProperty().addListener { _, _, newVal ->
                 model.searchQuery(newVal)
