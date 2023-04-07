@@ -5,8 +5,11 @@ import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
+import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import org.controlsfx.glyphfont.FontAwesome
@@ -31,6 +34,12 @@ class SideToolBar(private val model: Model): BorderPane(), IView {
     }
 
     override fun update() {
+        // changes theme color
+        if (model.defaultDarkMode) {
+            this.background = Background(BackgroundFill(Color.DARKGREY, null, null))
+        } else if (!model.defaultDarkMode) {
+            this.background = Background(BackgroundFill(Color.TRANSPARENT, null, null))
+        }
     }
 
     init {
@@ -56,5 +65,6 @@ class SideToolBar(private val model: Model): BorderPane(), IView {
             }
             model.createNote(title, "Group " + "${model.getNotesList().size}", "")
         }
+        model.createView(this)
     }
 }

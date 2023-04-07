@@ -1,13 +1,13 @@
 package net.codebot.application
 import javafx.geometry.Insets
 import javafx.scene.input.KeyCode
-import javafx.scene.layout.ColumnConstraints
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.Priority
-import javafx.scene.layout.RowConstraints
+import javafx.scene.layout.*
+import javafx.scene.layout.GridPane.setHgrow
+import javafx.scene.paint.Color
 
 // This class displays all our notes in the noteList variable in our model
-class NoteView(private val model: Model): GridPane(), IView {
+class NoteView(private val model: Model): VBox(), IView {
+    val displayGrid = GridPane()
     // Create an empty temporary notesList
     private var notelist : ArrayList<NoteBlock> = ArrayList()
     private var tempNoteList = mutableListOf<NoteBlock>()
@@ -51,6 +51,12 @@ class NoteView(private val model: Model): GridPane(), IView {
     // We first search the notesList based on the model's search query, then sort the list based on the model's
     // sort value, and finally, we group any notes that have the same group in the notesList.
     override fun update() {
+        // changes theme color
+        if (model.defaultDarkMode) {
+            this.background = Background(BackgroundFill(Color.DARKGREY, null, null))
+        } else if (!model.defaultDarkMode) {
+            this.background = Background(BackgroundFill(Color.TRANSPARENT, null, null))
+        }
         notelist = model.getNotesList()
         if(tempNoteList != null) {
             tempNoteList.clear()
@@ -63,14 +69,14 @@ class NoteView(private val model: Model): GridPane(), IView {
         groupList(model.defaultgroup)
 
         // Clear the GridPane and add each note to a cell in the grid
-        children.clear()
+        displayGrid.children.clear()
         var row = 0
         var col = 0
         for (note in tempNoteList) {
             val box = note.getBox()
             setVgrow(box, Priority.ALWAYS)
             setHgrow(box, Priority.ALWAYS)
-            add(box, col, row)
+            displayGrid.add(box, col, row)
             col++
             if (col > 3) {
                 col = 0
@@ -80,21 +86,22 @@ class NoteView(private val model: Model): GridPane(), IView {
     }
 
     init {
-        vgap = 10.0
-        hgap = 10.0
+        displayGrid.vgap = 10.0
+        displayGrid.hgap = 10.0
         padding = Insets(10.0)
 
         // Add column and row constraints to make the GridPane resize properly
         for (i in 0..3) {
-            columnConstraints.add(ColumnConstraints().apply {
+            displayGrid.columnConstraints.add(ColumnConstraints().apply {
                 hgrow = Priority.ALWAYS
             })
         }
         for (i in 0..10) {
-            rowConstraints.add(RowConstraints().apply {
+            displayGrid.rowConstraints.add(RowConstraints().apply {
                 vgrow = Priority.ALWAYS
             })
         }
+        this.children.add(displayGrid)
         model.createView(this)
     }
 

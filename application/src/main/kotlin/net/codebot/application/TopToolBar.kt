@@ -4,13 +4,14 @@ import javafx.geometry.*
 import javafx.scene.Cursor
 import javafx.scene.control.*
 import javafx.scene.layout.*
+import javafx.scene.paint.Color
 import javafx.scene.text.Text
 import javafx.scene.text.TextAlignment
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import org.controlsfx.glyphfont.GlyphFontRegistry
 
-class TopToolBar(private val model: Model): VBox(), IView {
+class TopToolBar(private val model: Model, readInput: DataClass): VBox(), IView {
     // create components for the search/sort toolbar
     private val searchIcon: Glyph = GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.SEARCH).apply {
         fontSize = 20.0
@@ -52,7 +53,22 @@ class TopToolBar(private val model: Model): VBox(), IView {
         }
     }
 
+    private val darkMode = CheckMenuItem().apply {
+        graphic = Text("Enable Dark Mode").apply {
+            textAlignment = TextAlignment.LEFT
+        }
+        setOnAction {
+            model.setDarkMode(isSelected)
+        }
+    }
+
     override fun update() {
+        // changes theme color
+        if (model.defaultDarkMode) {
+            toolBarTop.background = Background(BackgroundFill(Color.DARKGREY, null, null))
+        } else {
+            toolBarTop.background = Background(BackgroundFill(Color.TRANSPARENT, null, null))
+        }
     }
 
     private val ellipseButton: MenuButton = MenuButton("", GlyphFontRegistry.font("FontAwesome").create(FontAwesome.Glyph.ELLIPSIS_V).apply {
@@ -60,7 +76,7 @@ class TopToolBar(private val model: Model): VBox(), IView {
         cursor = Cursor.HAND
         padding = Insets(0.0, 10.0, 0.0, 10.0)
         nodeOrientation = NodeOrientation.RIGHT_TO_LEFT
-    }, sortByTitle, sortByDate, groupDropdown)
+    }, sortByTitle, sortByDate, groupDropdown, darkMode)
 
     private val toolBarTop = ToolBar(searchBar, searchIcon, ellipseButton).apply {
         maxWidth = Double.MAX_VALUE
@@ -69,6 +85,10 @@ class TopToolBar(private val model: Model): VBox(), IView {
     }
 
     init {
+        // sets dark mode checkbox if its enabled
+        if (readInput.darkMode) {
+            darkMode.isSelected = true
+        }
         this.children.add(toolBarTop)
         // We add a listener to the searchBar button. We check if there is a change in our value, then
         // let our model know that there is a change of state for the model's search val.

@@ -7,6 +7,8 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
+import javafx.scene.layout.VBox.setVgrow
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -17,7 +19,7 @@ import kotlinx.serialization.json.Json
 data class DataClass(val width : Double, val height : Double,
                      val xCoord : Double, val yCoord : Double,
                      val titles : List<String>, val groups : List<String>,
-                     val contents : List<String>) {}
+                     val contents : List<String>, val darkMode: Boolean) {}
 
 class Main : Application() {
     override fun start(stage: Stage) {
@@ -30,9 +32,12 @@ class Main : Application() {
         var width =  notesData.width
         var stageX =  notesData.xCoord
         var stageY =  notesData.yCoord
-        val notesView = NoteView(model)
+        model.defaultDarkMode = notesData.darkMode
+        val notesView = NoteView(model).apply {
+            prefHeight = height - 90.0
+        }
 
-        val toolBarTop = TopToolBar(model).apply {
+        val toolBarTop = TopToolBar(model, notesData).apply {
             HBox.setHgrow(this, Priority.ALWAYS)
         }
         val toolBarLeft = SideToolBar(model)
@@ -77,8 +82,18 @@ class Main : Application() {
             stage.y = stageY
         }.show()
 
+        // since our TabPane only gets initialized after stage.show, we check for dark mode in the main
+        notesDisplay.apply {
+            val header = this.lookup(".tab-header-area")
+            if (notesData.darkMode && header != null) {
+                val background = header.lookup(".tab-header-background")
+                background.style = "-fx-background-color: #A9A9A9;"
+            }
+        }
+
         stage.heightProperty().addListener { _, _, newHeight ->
             height = newHeight.toDouble()
+            notesView.prefHeight = newHeight.toDouble() - 90.0
         }
 
         stage.widthProperty().addListener { _, _, newWidth ->
@@ -87,7 +102,8 @@ class Main : Application() {
         stage.setOnCloseRequest {
             try {
                 // When the application closes, push new changes made to our applications data into JSON file
-                val dataClassWhole = DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList, model.contentList)
+                val dataClassWhole = DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList,
+                    model.contentList, model.defaultDarkMode)
                 model.put(dataClassWhole)
             } catch (e: Exception) {
                 Platform.exit()
