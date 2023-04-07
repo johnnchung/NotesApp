@@ -43,6 +43,7 @@ class Model {
     var defaultsort = "Title"
     var searchval = ""
     var defaultgroup = false
+    var defaultDarkMode = false
 
     // Add a view to the views arraylist
     fun createView(view: IView) {
@@ -236,6 +237,11 @@ class Model {
     // to whatever newVal is, and lets all the views know that there is a change.
     fun searchQuery(newVal: String) {
         searchval = newVal
+        notifyObservers()
+    }
+
+    fun setDarkMode(newVal: Boolean) {
+        defaultDarkMode = newVal
         notifyObservers()
     }
 

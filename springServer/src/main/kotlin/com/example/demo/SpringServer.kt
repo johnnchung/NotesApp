@@ -20,7 +20,7 @@ class SpringServer
 data class NotesSchema(val width : Double, val height : Double,
 					   val xCoord : Double, val yCoord : Double,
 					   val titles : List<String>, val groups : List<String>,
-					   val contents : List<String>) {}
+					   val contents : List<String>, val darkMode: Boolean) {}
 
 fun main(args: Array<String>) {
 	runApplication<SpringServer>(*args)
@@ -45,7 +45,7 @@ class NotesResource(val service: NotesService) {
 @Service
 class NotesService {
 	// Initialize our JSON schema as empty
-	var notes: NotesSchema = NotesSchema(0.0, 0.0, 0.0, 0.0, emptyList(), emptyList(), emptyList())
+	var notes: NotesSchema = NotesSchema(0.0, 0.0, 0.0, 0.0, emptyList(), emptyList(), emptyList(), false)
 
 	// Retrieve list of notes
 	fun getAllNotes(): NotesSchema {

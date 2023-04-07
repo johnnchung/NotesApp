@@ -2,11 +2,25 @@ package net.codebot.application
 
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
+import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.BorderPane
+import javafx.scene.paint.Color
 
 // readInput: Users
 class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: BorderPane): TabPane(), IView {
     override fun update() {
+        // checks for the dark mode theme and sets the colors
+        val header = this.lookup(".tab-header-area")
+        if (model.defaultDarkMode && header != null) {
+            val background = header.lookup(".tab-header-background")
+            background.style = "-fx-background-color: #A9A9A9;"
+        } else {
+            if (header != null) {
+                val background = header.lookup(".tab-header-background")
+                background.style = "-fx-background-color: lightgrey;"
+            }
+        }
         if(model.openedNotes) {
             for(note in model.getNotesList()) {
                 if(note.getTitle() == model.editedNote) {
