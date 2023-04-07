@@ -2,10 +2,7 @@ package net.codebot.application
 
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.BorderPane
-import javafx.scene.paint.Color
 
 // readInput: Users
 class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: BorderPane): TabPane(), IView {
@@ -33,6 +30,9 @@ class TabPaneNotes(private val model: Model, readInput: DataClass, homePage: Bor
                         // If the tab doesn't exist, create a new tab and add it to the TabPane
                         val newTab = Tab(note.getTitle(), model.notePage[0]).apply {
                             setOnCloseRequest {
+                                if(model.autoSave) {
+                                    model.saveNotes()
+                                }
                                 model.notePage[0].notes.htmlText = ""
                             }
                         }

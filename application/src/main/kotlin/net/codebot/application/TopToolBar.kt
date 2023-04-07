@@ -1,6 +1,7 @@
 package net.codebot.application
 
-import javafx.geometry.*
+import javafx.geometry.Insets
+import javafx.geometry.NodeOrientation
 import javafx.scene.Cursor
 import javafx.scene.control.*
 import javafx.scene.layout.*
@@ -62,6 +63,15 @@ class TopToolBar(private val model: Model, readInput: DataClass): VBox(), IView 
         }
     }
 
+    private val autoSave = CheckMenuItem().apply {
+        graphic = Text("Enable Auto Save").apply {
+            textAlignment = TextAlignment.LEFT
+        }
+        setOnAction {
+            model.setAutoSaveNotes(isSelected)
+        }
+    }
+
     override fun update() {
         // changes theme color
         if (model.defaultDarkMode) {
@@ -76,7 +86,7 @@ class TopToolBar(private val model: Model, readInput: DataClass): VBox(), IView 
         cursor = Cursor.HAND
         padding = Insets(0.0, 10.0, 0.0, 10.0)
         nodeOrientation = NodeOrientation.RIGHT_TO_LEFT
-    }, sortByTitle, sortByDate, groupDropdown, darkMode)
+    }, sortByTitle, sortByDate, groupDropdown, darkMode, autoSave)
 
     private val toolBarTop = ToolBar(searchBar, searchIcon, ellipseButton).apply {
         maxWidth = Double.MAX_VALUE
@@ -88,6 +98,11 @@ class TopToolBar(private val model: Model, readInput: DataClass): VBox(), IView 
         // sets dark mode checkbox if its enabled
         if (readInput.darkMode) {
             darkMode.isSelected = true
+        }
+
+        // sets auto save checkbox if its enabled
+        if (readInput.autoSave) {
+            autoSave.isSelected = true
         }
         this.children.add(toolBarTop)
         // We add a listener to the searchBar button. We check if there is a change in our value, then
