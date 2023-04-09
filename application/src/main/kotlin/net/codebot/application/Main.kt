@@ -7,8 +7,6 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
-import javafx.scene.layout.VBox.setVgrow
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -19,7 +17,8 @@ import kotlinx.serialization.json.Json
 data class DataClass(val width : Double, val height : Double,
                      val xCoord : Double, val yCoord : Double,
                      val titles : List<String>, val groups : List<String>,
-                     val contents : List<String>, val darkMode: Boolean) {}
+                     val contents : List<String>, val darkMode: Boolean,
+                     val autoSave: Boolean) {}
 
 class Main : Application() {
     override fun start(stage: Stage) {
@@ -33,6 +32,8 @@ class Main : Application() {
         var stageX =  notesData.xCoord
         var stageY =  notesData.yCoord
         model.defaultDarkMode = notesData.darkMode
+        model.autoSave = notesData.autoSave
+
         val notesView = NoteView(model).apply {
             prefHeight = height - 90.0
         }
@@ -101,9 +102,12 @@ class Main : Application() {
         }
         stage.setOnCloseRequest {
             try {
+                if(model.autoSave) {
+                    model.saveNotes()
+                }
                 // When the application closes, push new changes made to our applications data into JSON file
                 val dataClassWhole = DataClass(width, height, stage.x, stage.y, model.titleList, model.groupList,
-                    model.contentList, model.defaultDarkMode)
+                    model.contentList, model.defaultDarkMode, model.autoSave)
                 model.put(dataClassWhole)
             } catch (e: Exception) {
                 Platform.exit()

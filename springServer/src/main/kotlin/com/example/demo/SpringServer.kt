@@ -8,8 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -20,7 +18,8 @@ class SpringServer
 data class NotesSchema(val width : Double, val height : Double,
 					   val xCoord : Double, val yCoord : Double,
 					   val titles : List<String>, val groups : List<String>,
-					   val contents : List<String>, val darkMode: Boolean) {}
+					   val contents : List<String>, val darkMode: Boolean,
+					   val autoSave : Boolean) {}
 
 fun main(args: Array<String>) {
 	runApplication<SpringServer>(*args)
@@ -45,7 +44,7 @@ class NotesResource(val service: NotesService) {
 @Service
 class NotesService {
 	// Initialize our JSON schema as empty
-	var notes: NotesSchema = NotesSchema(0.0, 0.0, 0.0, 0.0, emptyList(), emptyList(), emptyList(), false)
+	var notes: NotesSchema = NotesSchema(0.0, 0.0, 0.0, 0.0, emptyList(), emptyList(), emptyList(), false, false)
 
 	// Retrieve list of notes
 	fun getAllNotes(): NotesSchema {

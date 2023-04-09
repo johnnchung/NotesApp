@@ -38,12 +38,13 @@ class Model {
     var savedNotes = false
     private var closedNotes = false
 
-    // Default state values for sorting options, default search value for the search bar,
-    // and if sort by grouping is enabled.
+    // Default state values for sorting options, search bar, if sort by grouping is enabled,
+    // dark mode enabling, and autoSave enabling
     var defaultsort = "Title"
     var searchval = ""
     var defaultgroup = false
     var defaultDarkMode = false
+    var autoSave = false
 
     // Add a view to the views arraylist
     fun createView(view: IView) {
@@ -240,8 +241,15 @@ class Model {
         notifyObservers()
     }
 
+    // Function to change colour theme functionality to dark or light
     fun setDarkMode(newVal: Boolean) {
         defaultDarkMode = newVal
+        notifyObservers()
+    }
+
+    // Function to change global autosave functionality to true or false
+    fun setAutoSaveNotes(newVal: Boolean) {
+        autoSave = newVal
         notifyObservers()
     }
 
