@@ -21,17 +21,6 @@ Yang Ji, John Chung, Hammad Khan, Tim Chung
 3. Allow user, group, and other permissions by running ```chmod 400 <Path-To-connectnotesinstance.pem>``` <br />
 4. Follow steps 2-5 above!
 
-# Supported gradle tasks:
-
-| Tasks   | Description                                          |
-|:--------|:-----------------------------------------------------|
-| clean   | Remove build/ directory                              |
-| build   | Build the application project in build/ directory    |
-| run     | Run the application or console project               |
-| distZip | Create run scripts in application/build/distribution |
-| distTar | Create run scripts in application/build/distribution |
-
-
 # Releases
 Version 1.0: Released Feburary 17th, 2023<br />
 	- release-notes (in releases folder)<br />
@@ -49,3 +38,12 @@ Version 3.0: Released April 10th, 2023 <br />
 	- release-notes (in releases folder)<br />
 	- Installers (Windows, MacOS)<br />
 <br />
+# Supported gradle tasks:
+
+| Tasks   | Description                                          |
+|:--------|:-----------------------------------------------------|
+| clean   | Remove build/ directory                              |
+| build   | Build the application project in build/ directory    |
+| run     | Run the application or console project               |
+| distZip | Create run scripts in application/build/distribution |
+| distTar | Create run scripts in application/build/distribution |
