@@ -21,6 +21,8 @@ Yang Ji, John Chung, Hammad Khan, Tim Chung
 3. Allow user, group, and other permissions by running ```chmod 400 <Path-To-connectnotesinstance.pem>``` <br />
 4. Follow steps 2-5 above!
 
+You can also find a usage page under https://git.uwaterloo.ca/j88chung1/cs346-project/-/wikis/Notes-App-Usage/Features with implemented features and what our app can do!
+
 # Releases
 Version 1.0: Released Feburary 17th, 2023<br />
 	- release-notes (in releases folder)<br />
