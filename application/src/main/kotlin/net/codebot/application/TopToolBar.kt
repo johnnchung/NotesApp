@@ -72,6 +72,16 @@ class TopToolBar(private val model: Model, readInput: DataClass): VBox(), IView 
         }
     }
 
+    // Return ellipse instance
+    fun getEllipse():MenuButton{
+        return ellipseButton
+    }
+
+    // Return searchbar instance
+    fun getSearchBar(): TextField {
+        return searchBar
+    }
+
     override fun update() {
         // changes theme color
         if (model.defaultDarkMode) {

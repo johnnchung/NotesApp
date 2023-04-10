@@ -47,6 +47,15 @@ class NoteBlock(private val model: Model, title: String, group: String, body: St
     fun getBox(): HBox {
         return block
     }
+
+    fun getDeleteOpenBlock(): VBox {
+        return deleteOpenBlock
+    }
+
+    fun getCombinedTitleGroupBlock(): VBox {
+        return combineTitleGroup
+    }
+
     fun setContent(str: String) {
         pureText = str
     }

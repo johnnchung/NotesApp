@@ -17,6 +17,11 @@ import org.controlsfx.glyphfont.Glyph
 import org.controlsfx.glyphfont.GlyphFontRegistry
 
 class SideToolBar(private val model: Model): BorderPane(), IView {
+
+    // Return create Button
+    fun getCreateButton(): Glyph {
+        return createButton
+    }
     // Create title for application
     private val notesHeader = Label("Notes").apply {
         font = Font.font("System", FontWeight.BOLD,25.0)
