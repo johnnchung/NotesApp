@@ -5,8 +5,6 @@ Release 1.0
 - Rich text editor for editing the notes
 - Create installer for mac
 
-
 Some issues to address in next release
-- Need to add functionality to load note information on note edit
-- installer for mac works, but we need to hardcode where the data.json is
-	- Potential change to online static database
+- Support more functionality of GUI application
+- think about how to save data to JSON, and whether to use local data storage or a database
