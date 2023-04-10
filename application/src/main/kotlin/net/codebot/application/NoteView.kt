@@ -1,6 +1,5 @@
 package net.codebot.application
 import javafx.geometry.Insets
-import javafx.scene.input.KeyCode
 import javafx.scene.layout.*
 import javafx.scene.layout.GridPane.setHgrow
 import javafx.scene.paint.Color

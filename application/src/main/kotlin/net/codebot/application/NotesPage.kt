@@ -1,6 +1,5 @@
 package net.codebot.application
 
-import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
