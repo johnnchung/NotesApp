@@ -9,8 +9,20 @@ class MenuBarClass(private val model: Model, private val homePage: Node) : MenuB
     private val fileOptions = Menu("File")
     private val viewOptions = Menu("View")
 
+    fun getFileOptions():Menu {
+        return fileOptions
+    }
+
+    fun getViewOptions():Menu {
+        return viewOptions
+    }
+
+
+
     override fun update() {
     }
+
+
 
     init {
         // File menu items
