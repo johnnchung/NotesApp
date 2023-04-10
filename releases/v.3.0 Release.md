@@ -1,4 +1,4 @@
-Release 2.0
+Release 3.0
 
 What's New:
 - Added ability to save the HtmlEditors content field in a local JSON file
