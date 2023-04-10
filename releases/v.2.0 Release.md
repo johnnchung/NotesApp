@@ -1,4 +1,4 @@
-Release 1.5 (Since we forgot release 1)
+Release 2.0
 
 - Added functionality to create notes with title and group
 	- Added functionality to delete note, as well as edit the body content
